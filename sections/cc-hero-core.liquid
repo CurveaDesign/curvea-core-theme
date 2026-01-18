@@ -1,0 +1,302 @@
+{%- liquid
+  assign variant = section.settings.variant
+  assign container = section.settings.container
+  assign py = section.settings.py
+  assign bg = section.settings.bg
+  assign text = section.settings.text
+  assign align = section.settings.align
+  assign gap = section.settings.gap
+
+  assign grid = ''
+  assign media_order = ''
+
+  case variant
+    when 'stack'
+      assign grid = 'grid grid-cols-1'
+      assign media_order = ''
+    when 'split_left'
+      assign grid = 'grid grid-cols-1 lg:grid-cols-2'
+      assign media_order = 'lg:order-1'
+    when 'split_right'
+      assign grid = 'grid grid-cols-1 lg:grid-cols-2'
+      assign media_order = 'lg:order-2'
+    when 'minimal'
+      assign grid = 'grid grid-cols-1'
+      assign media_order = ''
+    else
+      assign grid = 'grid grid-cols-1 lg:grid-cols-2'
+      assign media_order = 'lg:order-2'
+  endcase
+
+  assign text_align = ''
+  case align
+    when 'center'
+      assign text_align = 'text-center items-center'
+    when 'right'
+      assign text_align = 'text-right items-end'
+    else
+      assign text_align = 'text-left items-start'
+  endcase
+-%}
+
+<section class="{{ bg }} {{ text }} {{ py }}">
+  {% capture inner %}
+    <div class="{{ grid }} {{ gap }} items-center">
+      <div class="flex flex-col {{ text_align }}">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+
+            {%- when 'kicker' -%}
+              <p {{ block.shopify_attributes }} class="text-sm font-medium opacity-80">
+                {{ block.settings.text }}
+              </p>
+
+            {%- when 'heading' -%}
+              <h1 {{ block.shopify_attributes }} class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight">
+                {{ block.settings.text }}
+              </h1>
+
+            {%- when 'text' -%}
+              <div {{ block.shopify_attributes }} class="mt-4 max-w-prose text-base sm:text-lg opacity-90">
+                {{ block.settings.text }}
+              </div>
+
+            {%- when 'buttons' -%}
+              {%- liquid
+                assign btn_wrap = 'mt-6 flex flex-wrap gap-3'
+                if align == 'center'
+                  assign btn_wrap = btn_wrap | append: ' justify-center'
+                elsif align == 'right'
+                  assign btn_wrap = btn_wrap | append: ' justify-end'
+                endif
+              -%}
+
+              <div {{ block.shopify_attributes }} class="{{ btn_wrap }}">
+                {%- if block.settings.primary_label != blank and block.settings.primary_link != blank -%}
+                  <a class="inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-medium bg-white/10 hover:bg-white/15 border border-white/15"
+                     href="{{ block.settings.primary_link }}">
+                    {{ block.settings.primary_label }}
+                  </a>
+                {%- endif -%}
+
+                {%- if block.settings.secondary_label != blank and block.settings.secondary_link != blank -%}
+                  <a class="inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-medium bg-transparent hover:bg-white/10 border border-white/15"
+                     href="{{ block.settings.secondary_link }}">
+                    {{ block.settings.secondary_label }}
+                  </a>
+                {%- endif -%}
+              </div>
+
+            {%- when 'media' -%}
+              {%- liquid
+                assign media_class = 'w-full overflow-hidden rounded-2xl border border-white/10'
+                if variant == 'minimal'
+                  assign media_class = media_class | append: ' hidden'
+                endif
+              -%}
+              <div {{ block.shopify_attributes }} class="{{ media_class }} {{ media_order }}">
+                {%- if block.settings.image != blank -%}
+                  {{ block.settings.image | image_url: width: 2200 | image_tag: class: 'w-full h-auto', loading: 'lazy' }}
+                {%- else -%}
+                  <div class="aspect-[16/10] w-full bg-white/5"></div>
+                {%- endif -%}
+              </div>
+
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+
+      {%- unless variant == 'stack' or variant == 'minimal' -%}
+        {%- comment -%} If media block exists, it will appear when rendered above. In split layouts we also allow media to sit in grid position via order classes. {%- endcomment -%}
+      {%- endunless -%}
+    </div>
+  {% endcapture %}
+
+ {% render 'cc-container', size: container, content: inner %}
+</section>
+
+{% schema %}
+{
+  "name": "CC — Hero Core",
+  "tag": "section",
+  "class": "cc-hero-core",
+  "settings": [
+    {
+      "type": "select",
+      "id": "variant",
+      "label": "Layout variant",
+      "default": "split_right",
+      "options": [
+        { "value": "split_right", "label": "Split (media right)" },
+        { "value": "split_left", "label": "Split (media left)" },
+        { "value": "stack", "label": "Stacked" },
+        { "value": "minimal", "label": "Minimal (text only)" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container width",
+      "default": "xl",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "Extra large" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Text alignment",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "py",
+      "label": "Vertical spacing",
+      "default": "py-14 sm:py-20 lg:py-24",
+      "options": [
+        { "value": "py-10 sm:py-14", "label": "Compact" },
+        { "value": "py-14 sm:py-20 lg:py-24", "label": "Comfort" },
+        { "value": "py-20 sm:py-28 lg:py-32", "label": "Spacious" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "gap",
+      "label": "Column gap",
+      "default": "gap-10 lg:gap-14",
+      "options": [
+        { "value": "gap-8 lg:gap-10", "label": "Tight" },
+        { "value": "gap-10 lg:gap-14", "label": "Normal" },
+        { "value": "gap-12 lg:gap-18", "label": "Wide" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "bg",
+      "label": "Background",
+      "default": "bg-neutral-950",
+      "options": [
+        { "value": "bg-white", "label": "White" },
+        { "value": "bg-neutral-50", "label": "Soft light" },
+        { "value": "bg-neutral-950", "label": "Dark" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text",
+      "label": "Text color",
+      "default": "text-white",
+      "options": [
+        { "value": "text-neutral-900", "label": "Dark text" },
+        { "value": "text-neutral-800", "label": "Muted dark" },
+        { "value": "text-white", "label": "White text" }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "kicker",
+      "name": "Kicker",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Curvea Core" }]
+    },
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Heading",
+          "default": "Build a premium storefront without fighting the theme."
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Drag-and-drop sections designed to adapt to any brand — fast, clean, and editor-first.</p>"
+        }
+      ]
+    },
+    {
+      "type": "buttons",
+      "name": "Buttons",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "primary_label", "label": "Primary label", "default": "Shop now" },
+        { "type": "url", "id": "primary_link", "label": "Primary link" },
+        { "type": "text", "id": "secondary_label", "label": "Secondary label", "default": "Learn more" },
+        { "type": "url", "id": "secondary_link", "label": "Secondary link" }
+      ]
+    },
+    {
+      "type": "media",
+      "name": "Media",
+      "limit": 1,
+      "settings": [{ "type": "image_picker", "id": "image", "label": "Image" }]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CC Hero — Classic",
+      "settings": { "variant": "split_right", "align": "left", "bg": "bg-neutral-950", "text": "text-white" },
+      "blocks": [
+        { "type": "kicker" },
+        { "type": "heading" },
+        { "type": "text" },
+        { "type": "buttons" },
+        { "type": "media" }
+      ]
+    },
+    {
+      "name": "CC Hero — Split Left",
+      "settings": { "variant": "split_left", "align": "left", "bg": "bg-neutral-50", "text": "text-neutral-900" },
+      "blocks": [
+        { "type": "kicker" },
+        { "type": "heading" },
+        { "type": "text" },
+        { "type": "buttons" },
+        { "type": "media" }
+      ]
+    },
+    {
+      "name": "CC Hero — Minimal",
+      "settings": { "variant": "minimal", "align": "left", "bg": "bg-white", "text": "text-neutral-900" },
+      "blocks": [{ "type": "kicker" }, { "type": "heading" }, { "type": "text" }, { "type": "buttons" }]
+    },
+    {
+      "name": "CC Hero — Editorial",
+      "settings": {
+        "variant": "stack",
+        "align": "center",
+        "bg": "bg-neutral-950",
+        "text": "text-white",
+        "py": "py-20 sm:py-28 lg:py-32"
+      },
+      "blocks": [
+        { "type": "kicker" },
+        { "type": "heading" },
+        { "type": "text" },
+        { "type": "buttons" },
+        { "type": "media" }
+      ]
+    }
+  ]
+}
+{% endschema %}

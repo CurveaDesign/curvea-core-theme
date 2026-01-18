@@ -1,0 +1,22 @@
+{%- liquid
+  assign size = size | default: 'lg'
+  assign pad_x = pad_x | default: 'px-4 sm:px-6 lg:px-8'
+  assign classes = classes | default: ''
+
+  case size
+    when 'sm'
+      assign maxw = 'max-w-3xl'
+    when 'md'
+      assign maxw = 'max-w-5xl'
+    when 'lg'
+      assign maxw = 'max-w-6xl'
+    when 'xl'
+      assign maxw = 'max-w-7xl'
+    else
+      assign maxw = 'max-w-6xl'
+  endcase
+-%}
+
+<div class="mx-auto w-full {{ maxw }} {{ pad_x }} {{ classes }}">
+  {{ content }}
+</div>
