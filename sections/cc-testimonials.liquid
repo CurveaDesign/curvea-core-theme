@@ -35,9 +35,7 @@
     <div class="flex flex-col {{ text_align }}">
       {%- for block in section.blocks -%}
         {%- if block.type == 'heading' -%}
-          <h2 {{ block.shopify_attributes }} class="text-3xl sm:text-4xl font-semibold tracking-tight">
-            {{ block.settings.text }}
-          </h2>
+          {% render 'cc-heading', tag: 'h2', text: block.settings.text, classes: 'text-3xl sm:text-4xl font-semibold tracking-tight', align: align, shopify_attributes: block.shopify_attributes %}
         {%- endif -%}
       {%- endfor -%}
     </div>
@@ -45,16 +43,12 @@
     <div class="mt-10 {{ list_class }} {{ gap }}">
       {%- for block in section.blocks -%}
         {%- if block.type == 'testimonial' -%}
-          <article {{ block.shopify_attributes }} class="flex flex-col gap-4 rounded-2xl border border-white/10 p-6">
+          <article {{ block.shopify_attributes }} class="flex flex-col gap-4 rounded-2xl border border-current/10 p-6">
             <div class="text-base opacity-90">
               {{ block.settings.quote }}
             </div>
             <div class="flex items-center gap-3">
-              {%- if block.settings.avatar != blank -%}
-                {{ block.settings.avatar | image_url: width: 120 | image_tag: class: 'h-10 w-10 rounded-full object-cover', loading: 'lazy' }}
-              {%- else -%}
-                <div class="h-10 w-10 rounded-full bg-white/10"></div>
-              {%- endif -%}
+              {% render 'cc-media', image: block.settings.avatar, aspect: '1/1', classes: 'h-10 w-10 overflow-hidden rounded-full flex-shrink-0', img_class: 'h-full w-full object-cover' %}
               <div>
                 <p class="text-sm font-semibold">{{ block.settings.name }}</p>
                 <p class="text-xs opacity-70">{{ block.settings.meta }}</p>

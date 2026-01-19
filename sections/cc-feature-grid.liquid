@@ -42,13 +42,9 @@
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when 'kicker' -%}
-            <p {{ block.shopify_attributes }} class="text-sm font-medium opacity-80">
-              {{ block.settings.text }}
-            </p>
+            {% render 'cc-heading', tag: 'p', text: block.settings.text, classes: 'text-sm font-medium opacity-80', align: align, shopify_attributes: block.shopify_attributes %}
           {%- when 'heading' -%}
-            <h2 {{ block.shopify_attributes }} class="mt-3 text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">
-              {{ block.settings.text }}
-            </h2>
+            {% render 'cc-heading', tag: 'h2', text: block.settings.text, classes: 'mt-3', align: align, shopify_attributes: block.shopify_attributes %}
           {%- when 'text' -%}
             <div {{ block.shopify_attributes }} class="mt-4 max-w-prose text-base sm:text-lg opacity-90">
               {{ block.settings.text }}
@@ -60,13 +56,9 @@
     <div class="mt-10 {{ grid_class }} {{ gap }}">
       {%- for block in section.blocks -%}
         {%- if block.type == 'feature' -%}
-          <div {{ block.shopify_attributes }} class="flex flex-col gap-3 rounded-2xl border border-white/10 p-6 {{ item_align }}">
-            {%- if block.settings.icon != blank -%}
-              {{ block.settings.icon | image_url: width: 160 | image_tag: class: 'h-10 w-10', loading: 'lazy' }}
-            {%- endif -%}
-            <h3 class="text-lg font-semibold">
-              {{ block.settings.heading }}
-            </h3>
+          <div {{ block.shopify_attributes }} class="flex flex-col gap-3 rounded-2xl border border-current/10 p-6 {{ item_align }}">
+            {% render 'cc-media', image: block.settings.icon, aspect: '1/1', classes: 'h-10 w-10', img_class: 'h-full w-full object-contain' %}
+            {% render 'cc-heading', tag: 'h3', text: block.settings.heading, classes: 'text-lg font-semibold', align: align %}
             <div class="text-sm opacity-80">
               {{ block.settings.text }}
             </div>

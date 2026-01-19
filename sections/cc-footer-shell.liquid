@@ -6,7 +6,7 @@
           {% when 'link_column' %}
             <div {{ block.shopify_attributes }}>
               {% if block.settings.heading != blank %}
-                <h3 class="text-sm font-semibold uppercase tracking-wide">{{ block.settings.heading }}</h3>
+                {% render 'cc-heading', tag: 'h3', text: block.settings.heading, classes: 'text-sm font-semibold uppercase tracking-wide' %}
               {% endif %}
               {% if block.settings.menu != blank %}
                 <ul class="mt-4 space-y-2 text-sm">
@@ -26,7 +26,9 @@
             </div>
           {% when 'social' %}
             <div {{ block.shopify_attributes }}>
-              <h3 class="text-sm font-semibold uppercase tracking-wide">{{ block.settings.heading }}</h3>
+              {% if block.settings.heading != blank %}
+                {% render 'cc-heading', tag: 'h3', text: block.settings.heading, classes: 'text-sm font-semibold uppercase tracking-wide' %}
+              {% endif %}
               <ul class="mt-4 space-y-2 text-sm">
                 {% if block.settings.show_facebook and settings.social_facebook_link != blank %}
                   <li><a href="{{ settings.social_facebook_link }}" class="transition-opacity hover:opacity-75">Facebook</a></li>

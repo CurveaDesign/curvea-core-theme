@@ -35,9 +35,7 @@
     <div class="flex flex-col {{ text_align }}">
       {%- for block in section.blocks -%}
         {%- if block.type == 'heading' -%}
-          <h2 {{ block.shopify_attributes }} class="text-2xl sm:text-3xl font-semibold tracking-tight">
-            {{ block.settings.text }}
-          </h2>
+          {% render 'cc-heading', tag: 'h2', text: block.settings.text, classes: 'text-2xl sm:text-3xl font-semibold tracking-tight', align: align, shopify_attributes: block.shopify_attributes %}
         {%- endif -%}
       {%- endfor -%}
     </div>
@@ -45,21 +43,16 @@
     <div class="mt-8 {{ grid_class }} {{ gap }} items-center">
       {%- for block in section.blocks -%}
         {%- if block.type == 'logo' -%}
+          {%- capture logo_media -%}
+            {% render 'cc-media', image: block.settings.image, aspect: 'auto', classes: 'flex items-center justify-center rounded-xl border border-current/10 p-4', img_class: 'h-10 w-auto' %}
+          {%- endcapture -%}
           {%- if block.settings.link != blank -%}
-            <a {{ block.shopify_attributes }} class="flex items-center justify-center rounded-xl border border-white/10 p-4" href="{{ block.settings.link }}">
-              {%- if block.settings.image != blank -%}
-                {{ block.settings.image | image_url: width: 240 | image_tag: class: 'h-10 w-auto', loading: 'lazy' }}
-              {%- else -%}
-                <span class="text-sm opacity-60">Logo</span>
-              {%- endif -%}
+            <a {{ block.shopify_attributes }} class="block" href="{{ block.settings.link }}">
+              {{ logo_media }}
             </a>
           {%- else -%}
-            <div {{ block.shopify_attributes }} class="flex items-center justify-center rounded-xl border border-white/10 p-4">
-              {%- if block.settings.image != blank -%}
-                {{ block.settings.image | image_url: width: 240 | image_tag: class: 'h-10 w-auto', loading: 'lazy' }}
-              {%- else -%}
-                <span class="text-sm opacity-60">Logo</span>
-              {%- endif -%}
+            <div {{ block.shopify_attributes }}>
+              {{ logo_media }}
             </div>
           {%- endif -%}
         {%- endif -%}

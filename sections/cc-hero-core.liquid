@@ -41,26 +41,16 @@
 
 <section class="{{ bg }} {{ text }} {{ py }}">
   {% capture inner %}
-    <div class="{{ grid }} {{ gap }} items-center">
+    {% capture text_column %}
       <div class="flex flex-col {{ text_align }}">
         {%- for block in section.blocks -%}
           {%- case block.type -%}
-
             {%- when 'kicker' -%}
-              <p {{ block.shopify_attributes }} class="text-sm font-medium opacity-80">
-                {{ block.settings.text }}
-              </p>
-
+              {% render 'cc-heading', tag: 'p', text: block.settings.text, classes: 'text-sm font-medium opacity-80', align: align, shopify_attributes: block.shopify_attributes %}
             {%- when 'heading' -%}
-              <h1 {{ block.shopify_attributes }} class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight">
-                {{ block.settings.text }}
-              </h1>
-
+              {% render 'cc-heading', tag: 'h1', text: block.settings.text, classes: 'mt-3', align: align, shopify_attributes: block.shopify_attributes %}
             {%- when 'text' -%}
-              <div {{ block.shopify_attributes }} class="mt-4 max-w-prose text-base sm:text-lg opacity-90">
-                {{ block.settings.text }}
-              </div>
-
+              {% render 'cc-heading', tag: 'p', text: block.settings.text, classes: 'mt-4 max-w-prose text-base sm:text-lg opacity-90', align: align, shopify_attributes: block.shopify_attributes %}
             {%- when 'buttons' -%}
               {%- liquid
                 assign btn_wrap = 'mt-6 flex flex-wrap gap-3'
@@ -70,45 +60,34 @@
                   assign btn_wrap = btn_wrap | append: ' justify-end'
                 endif
               -%}
-
               <div {{ block.shopify_attributes }} class="{{ btn_wrap }}">
-                {%- if block.settings.primary_label != blank and block.settings.primary_link != blank -%}
-                  <a class="inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-medium bg-white/10 hover:bg-white/15 border border-white/15"
-                     href="{{ block.settings.primary_link }}">
-                    {{ block.settings.primary_label }}
-                  </a>
-                {%- endif -%}
-
-                {%- if block.settings.secondary_label != blank and block.settings.secondary_link != blank -%}
-                  <a class="inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-medium bg-transparent hover:bg-white/10 border border-white/15"
-                     href="{{ block.settings.secondary_link }}">
-                    {{ block.settings.secondary_label }}
-                  </a>
-                {%- endif -%}
+                {% render 'cc-button', label: block.settings.primary_label, href: block.settings.primary_link, variant: 'primary' %}
+                {% render 'cc-button', label: block.settings.secondary_label, href: block.settings.secondary_link, variant: 'secondary' %}
               </div>
-
-            {%- when 'media' -%}
-              {%- liquid
-                assign media_class = 'w-full overflow-hidden rounded-2xl border border-white/10'
-                if variant == 'minimal'
-                  assign media_class = media_class | append: ' hidden'
-                endif
-              -%}
-              <div {{ block.shopify_attributes }} class="{{ media_class }} {{ media_order }}">
-                {%- if block.settings.image != blank -%}
-                  {{ block.settings.image | image_url: width: 2200 | image_tag: class: 'w-full h-auto', loading: 'lazy' }}
-                {%- else -%}
-                  <div class="aspect-[16/10] w-full bg-white/5"></div>
-                {%- endif -%}
-              </div>
-
           {%- endcase -%}
         {%- endfor -%}
       </div>
+    {% endcapture %}
 
-      {%- unless variant == 'stack' or variant == 'minimal' -%}
-        {%- comment -%} If media block exists, it will appear when rendered above. In split layouts we also allow media to sit in grid position via order classes. {%- endcomment -%}
-      {%- endunless -%}
+    {% capture media_column %}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'media' -%}
+          {%- liquid
+            assign media_class = 'w-full overflow-hidden rounded-2xl border border-current/10'
+            if variant == 'minimal'
+              assign media_class = media_class | append: ' hidden'
+            endif
+          -%}
+          <div {{ block.shopify_attributes }} class="{{ media_class }} {{ media_order }}">
+            {% render 'cc-media', image: block.settings.image, aspect: '16/10' %}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    {% endcapture %}
+
+    <div class="{{ grid }} {{ gap }} items-center">
+      {{ text_column }}
+      {{ media_column }}
     </div>
   {% endcapture %}
 
