@@ -1,0 +1,230 @@
+{%- liquid
+  assign variant = section.settings.variant
+  assign container = section.settings.container
+  assign py = section.settings.py
+  assign bg = section.settings.bg
+  assign text = section.settings.text
+  assign align = section.settings.align
+  assign gap = section.settings.gap
+  assign pad_x = ''
+  assign classes = ''
+
+  assign grid_class = ''
+  case variant
+    when 'center'
+      assign grid_class = 'flex flex-col'
+    when 'split'
+      assign grid_class = 'grid grid-cols-1 lg:grid-cols-2'
+    else
+      assign grid_class = 'flex flex-col'
+  endcase
+
+  assign text_align = ''
+  case align
+    when 'center'
+      assign text_align = 'text-center items-center'
+    when 'right'
+      assign text_align = 'text-right items-end'
+    else
+      assign text_align = 'text-left items-start'
+  endcase
+-%}
+
+<section class="{{ bg }} {{ text }} {{ py }}">
+  {% capture inner %}
+    <div class="{{ grid_class }} {{ gap }} items-center">
+      <div class="flex flex-col {{ text_align }}">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'kicker' -%}
+              <p {{ block.shopify_attributes }} class="text-sm font-medium opacity-80">
+                {{ block.settings.text }}
+              </p>
+            {%- when 'heading' -%}
+              <h2 {{ block.shopify_attributes }} class="mt-3 text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">
+                {{ block.settings.text }}
+              </h2>
+            {%- when 'text' -%}
+              <div {{ block.shopify_attributes }} class="mt-4 max-w-prose text-base sm:text-lg opacity-90">
+                {{ block.settings.text }}
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'buttons' -%}
+          {%- liquid
+            assign btn_wrap = 'flex flex-wrap gap-3'
+            if variant == 'center'
+              assign btn_wrap = btn_wrap | append: ' mt-6'
+            endif
+            if align == 'center'
+              assign btn_wrap = btn_wrap | append: ' justify-center'
+            elsif align == 'right'
+              assign btn_wrap = btn_wrap | append: ' justify-end'
+            endif
+          -%}
+          <div {{ block.shopify_attributes }} class="{{ btn_wrap }}">
+            {%- if block.settings.primary_label != blank and block.settings.primary_link != blank -%}
+              <a class="inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-medium bg-white/10 hover:bg-white/15 border border-white/15"
+                 href="{{ block.settings.primary_link }}">
+                {{ block.settings.primary_label }}
+              </a>
+            {%- endif -%}
+            {%- if block.settings.secondary_label != blank and block.settings.secondary_link != blank -%}
+              <a class="inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-medium bg-transparent hover:bg-white/10 border border-white/15"
+                 href="{{ block.settings.secondary_link }}">
+                {{ block.settings.secondary_label }}
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {% endcapture %}
+
+  {% render 'cc-container', size: container, pad_x: pad_x, classes: classes, content: inner %}
+</section>
+
+{% schema %}
+{
+  "name": "CC — CTA",
+  "tag": "section",
+  "class": "cc-cta",
+  "settings": [
+    {
+      "type": "select",
+      "id": "variant",
+      "label": "Layout variant",
+      "default": "center",
+      "options": [
+        { "value": "center", "label": "Centered" },
+        { "value": "split", "label": "Split" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container width",
+      "default": "xl",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "Extra large" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Text alignment",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "py",
+      "label": "Vertical spacing",
+      "default": "py-14 sm:py-20 lg:py-24",
+      "options": [
+        { "value": "py-10 sm:py-14", "label": "Compact" },
+        { "value": "py-14 sm:py-20 lg:py-24", "label": "Comfort" },
+        { "value": "py-20 sm:py-28 lg:py-32", "label": "Spacious" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "gap",
+      "label": "Column gap",
+      "default": "gap-8 lg:gap-10",
+      "options": [
+        { "value": "gap-6 lg:gap-8", "label": "Tight" },
+        { "value": "gap-8 lg:gap-10", "label": "Normal" },
+        { "value": "gap-10 lg:gap-14", "label": "Wide" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "bg",
+      "label": "Background",
+      "default": "bg-neutral-950",
+      "options": [
+        { "value": "bg-white", "label": "White" },
+        { "value": "bg-neutral-50", "label": "Soft light" },
+        { "value": "bg-neutral-950", "label": "Dark" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text",
+      "label": "Text color",
+      "default": "text-white",
+      "options": [
+        { "value": "text-neutral-900", "label": "Dark text" },
+        { "value": "text-neutral-800", "label": "Muted dark" },
+        { "value": "text-white", "label": "White text" }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "kicker",
+      "name": "Kicker",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Ready to start?" }]
+    },
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "text", "label": "Heading", "default": "Launch faster with Curvea" }]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Use this CTA to focus shoppers on a single next step.</p>"
+        }
+      ]
+    },
+    {
+      "type": "buttons",
+      "name": "Buttons",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "primary_label", "label": "Primary label", "default": "Shop now" },
+        { "type": "url", "id": "primary_link", "label": "Primary link" },
+        { "type": "text", "id": "secondary_label", "label": "Secondary label", "default": "Learn more" },
+        { "type": "url", "id": "secondary_link", "label": "Secondary link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CC CTA — Centered",
+      "settings": { "variant": "center", "align": "center", "bg": "bg-neutral-950", "text": "text-white" },
+      "blocks": [{ "type": "kicker" }, { "type": "heading" }, { "type": "text" }, { "type": "buttons" }]
+    },
+    {
+      "name": "CC CTA — Split",
+      "settings": { "variant": "split", "align": "left", "bg": "bg-white", "text": "text-neutral-900" },
+      "blocks": [{ "type": "kicker" }, { "type": "heading" }, { "type": "text" }, { "type": "buttons" }]
+    },
+    {
+      "name": "CC CTA — Soft",
+      "settings": { "variant": "center", "align": "center", "bg": "bg-neutral-50", "text": "text-neutral-900" },
+      "blocks": [{ "type": "kicker" }, { "type": "heading" }, { "type": "text" }, { "type": "buttons" }]
+    }
+  ]
+}
+{% endschema %}

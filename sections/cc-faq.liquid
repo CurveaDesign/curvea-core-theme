@@ -1,0 +1,197 @@
+{%- liquid
+  assign variant = section.settings.variant
+  assign container = section.settings.container
+  assign py = section.settings.py
+  assign bg = section.settings.bg
+  assign text = section.settings.text
+  assign align = section.settings.align
+  assign gap = section.settings.gap
+  assign pad_x = ''
+  assign classes = ''
+
+  assign list_class = ''
+  case variant
+    when 'accordion'
+      assign list_class = 'flex flex-col'
+    when 'list'
+      assign list_class = 'flex flex-col'
+    else
+      assign list_class = 'flex flex-col'
+  endcase
+
+  assign text_align = ''
+  case align
+    when 'center'
+      assign text_align = 'text-center items-center'
+    when 'right'
+      assign text_align = 'text-right items-end'
+    else
+      assign text_align = 'text-left items-start'
+  endcase
+-%}
+
+<section class="{{ bg }} {{ text }} {{ py }}">
+  {% capture inner %}
+    <div class="flex flex-col {{ text_align }}">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'heading' -%}
+          <h2 {{ block.shopify_attributes }} class="text-3xl sm:text-4xl font-semibold tracking-tight">
+            {{ block.settings.text }}
+          </h2>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="mt-10 {{ list_class }} {{ gap }}">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'faq' -%}
+          {%- if variant == 'accordion' -%}
+            <details {{ block.shopify_attributes }} class="rounded-2xl border border-white/10 p-6">
+              <summary class="cursor-pointer text-base font-semibold">
+                {{ block.settings.question }}
+              </summary>
+              <div class="mt-3 text-sm opacity-85">
+                {{ block.settings.answer }}
+              </div>
+            </details>
+          {%- else -%}
+            <div {{ block.shopify_attributes }} class="rounded-2xl border border-white/10 p-6">
+              <h3 class="text-base font-semibold">{{ block.settings.question }}</h3>
+              <div class="mt-3 text-sm opacity-85">
+                {{ block.settings.answer }}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {% endcapture %}
+
+  {% render 'cc-container', size: container, pad_x: pad_x, classes: classes, content: inner %}
+</section>
+
+{% schema %}
+{
+  "name": "CC — FAQ",
+  "tag": "section",
+  "class": "cc-faq",
+  "settings": [
+    {
+      "type": "select",
+      "id": "variant",
+      "label": "Layout variant",
+      "default": "accordion",
+      "options": [
+        { "value": "accordion", "label": "Accordion" },
+        { "value": "list", "label": "List" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container width",
+      "default": "xl",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "Extra large" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Heading alignment",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "py",
+      "label": "Vertical spacing",
+      "default": "py-14 sm:py-20 lg:py-24",
+      "options": [
+        { "value": "py-10 sm:py-14", "label": "Compact" },
+        { "value": "py-14 sm:py-20 lg:py-24", "label": "Comfort" },
+        { "value": "py-20 sm:py-28 lg:py-32", "label": "Spacious" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "gap",
+      "label": "Item gap",
+      "default": "gap-4 lg:gap-6",
+      "options": [
+        { "value": "gap-3 lg:gap-5", "label": "Tight" },
+        { "value": "gap-4 lg:gap-6", "label": "Normal" },
+        { "value": "gap-6 lg:gap-8", "label": "Wide" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "bg",
+      "label": "Background",
+      "default": "bg-white",
+      "options": [
+        { "value": "bg-white", "label": "White" },
+        { "value": "bg-neutral-50", "label": "Soft light" },
+        { "value": "bg-neutral-950", "label": "Dark" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text",
+      "label": "Text color",
+      "default": "text-neutral-900",
+      "options": [
+        { "value": "text-neutral-900", "label": "Dark text" },
+        { "value": "text-neutral-800", "label": "Muted dark" },
+        { "value": "text-white", "label": "White text" }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "text", "label": "Heading", "default": "Frequently asked questions" }]
+    },
+    {
+      "type": "faq",
+      "name": "FAQ",
+      "limit": 20,
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "What is Curvea Core?" },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>A theme framework with flexible sections built for Shopify.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CC FAQ — Accordion",
+      "settings": { "variant": "accordion", "align": "left", "bg": "bg-white", "text": "text-neutral-900" },
+      "blocks": [{ "type": "heading" }, { "type": "faq" }, { "type": "faq" }, { "type": "faq" }]
+    },
+    {
+      "name": "CC FAQ — List",
+      "settings": { "variant": "list", "align": "left", "bg": "bg-neutral-50", "text": "text-neutral-900" },
+      "blocks": [{ "type": "heading" }, { "type": "faq" }, { "type": "faq" }]
+    },
+    {
+      "name": "CC FAQ — Dark",
+      "settings": { "variant": "accordion", "align": "left", "bg": "bg-neutral-950", "text": "text-white" },
+      "blocks": [{ "type": "heading" }, { "type": "faq" }, { "type": "faq" }]
+    }
+  ]
+}
+{% endschema %}

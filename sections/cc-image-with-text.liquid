@@ -1,0 +1,249 @@
+{%- liquid
+  assign variant = section.settings.variant
+  assign container = section.settings.container
+  assign py = section.settings.py
+  assign bg = section.settings.bg
+  assign text = section.settings.text
+  assign align = section.settings.align
+  assign gap = section.settings.gap
+  assign pad_x = ''
+  assign classes = ''
+
+  assign grid_class = ''
+  assign media_order = ''
+  case variant
+    when 'image_left'
+      assign grid_class = 'grid grid-cols-1 lg:grid-cols-2'
+      assign media_order = 'lg:order-1'
+    when 'image_right'
+      assign grid_class = 'grid grid-cols-1 lg:grid-cols-2'
+      assign media_order = 'lg:order-2'
+    when 'stacked'
+      assign grid_class = 'grid grid-cols-1'
+      assign media_order = ''
+    else
+      assign grid_class = 'grid grid-cols-1 lg:grid-cols-2'
+      assign media_order = 'lg:order-2'
+  endcase
+
+  assign text_align = ''
+  case align
+    when 'center'
+      assign text_align = 'text-center items-center'
+    when 'right'
+      assign text_align = 'text-right items-end'
+    else
+      assign text_align = 'text-left items-start'
+  endcase
+-%}
+
+<section class="{{ bg }} {{ text }} {{ py }}">
+  {% capture inner %}
+    <div class="{{ grid_class }} {{ gap }} items-center">
+      <div class="flex flex-col {{ text_align }}">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'kicker' -%}
+              <p {{ block.shopify_attributes }} class="text-sm font-medium opacity-80">
+                {{ block.settings.text }}
+              </p>
+            {%- when 'heading' -%}
+              <h2 {{ block.shopify_attributes }} class="mt-3 text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">
+                {{ block.settings.text }}
+              </h2>
+            {%- when 'text' -%}
+              <div {{ block.shopify_attributes }} class="mt-4 max-w-prose text-base sm:text-lg opacity-90">
+                {{ block.settings.text }}
+              </div>
+            {%- when 'buttons' -%}
+              {%- liquid
+                assign btn_wrap = 'mt-6 flex flex-wrap gap-3'
+                if align == 'center'
+                  assign btn_wrap = btn_wrap | append: ' justify-center'
+                elsif align == 'right'
+                  assign btn_wrap = btn_wrap | append: ' justify-end'
+                endif
+              -%}
+              <div {{ block.shopify_attributes }} class="{{ btn_wrap }}">
+                {%- if block.settings.primary_label != blank and block.settings.primary_link != blank -%}
+                  <a class="inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-medium bg-white/10 hover:bg-white/15 border border-white/15"
+                     href="{{ block.settings.primary_link }}">
+                    {{ block.settings.primary_label }}
+                  </a>
+                {%- endif -%}
+                {%- if block.settings.secondary_label != blank and block.settings.secondary_link != blank -%}
+                  <a class="inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-medium bg-transparent hover:bg-white/10 border border-white/15"
+                     href="{{ block.settings.secondary_link }}">
+                    {{ block.settings.secondary_label }}
+                  </a>
+                {%- endif -%}
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'media' -%}
+          <div {{ block.shopify_attributes }} class="w-full overflow-hidden rounded-2xl border border-white/10 {{ media_order }}">
+            {%- if block.settings.image != blank -%}
+              {{ block.settings.image | image_url: width: 2200 | image_tag: class: 'w-full h-auto', loading: 'lazy' }}
+            {%- else -%}
+              <div class="aspect-[4/3] w-full bg-white/5"></div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {% endcapture %}
+
+  {% render 'cc-container', size: container, pad_x: pad_x, classes: classes, content: inner %}
+</section>
+
+{% schema %}
+{
+  "name": "CC — Image with Text",
+  "tag": "section",
+  "class": "cc-image-with-text",
+  "settings": [
+    {
+      "type": "select",
+      "id": "variant",
+      "label": "Layout variant",
+      "default": "image_right",
+      "options": [
+        { "value": "image_left", "label": "Image left" },
+        { "value": "image_right", "label": "Image right" },
+        { "value": "stacked", "label": "Stacked" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container width",
+      "default": "xl",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "Extra large" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Text alignment",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "py",
+      "label": "Vertical spacing",
+      "default": "py-14 sm:py-20 lg:py-24",
+      "options": [
+        { "value": "py-10 sm:py-14", "label": "Compact" },
+        { "value": "py-14 sm:py-20 lg:py-24", "label": "Comfort" },
+        { "value": "py-20 sm:py-28 lg:py-32", "label": "Spacious" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "gap",
+      "label": "Column gap",
+      "default": "gap-10 lg:gap-14",
+      "options": [
+        { "value": "gap-8 lg:gap-10", "label": "Tight" },
+        { "value": "gap-10 lg:gap-14", "label": "Normal" },
+        { "value": "gap-12 lg:gap-18", "label": "Wide" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "bg",
+      "label": "Background",
+      "default": "bg-white",
+      "options": [
+        { "value": "bg-white", "label": "White" },
+        { "value": "bg-neutral-50", "label": "Soft light" },
+        { "value": "bg-neutral-950", "label": "Dark" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text",
+      "label": "Text color",
+      "default": "text-neutral-900",
+      "options": [
+        { "value": "text-neutral-900", "label": "Dark text" },
+        { "value": "text-neutral-800", "label": "Muted dark" },
+        { "value": "text-white", "label": "White text" }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "kicker",
+      "name": "Kicker",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Image + Text" }]
+    },
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "text", "label": "Heading", "default": "Tell a focused story" }]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Pair an image with supporting copy to highlight a key message or product.</p>"
+        }
+      ]
+    },
+    {
+      "type": "buttons",
+      "name": "Buttons",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "primary_label", "label": "Primary label", "default": "Shop now" },
+        { "type": "url", "id": "primary_link", "label": "Primary link" },
+        { "type": "text", "id": "secondary_label", "label": "Secondary label", "default": "Learn more" },
+        { "type": "url", "id": "secondary_link", "label": "Secondary link" }
+      ]
+    },
+    {
+      "type": "media",
+      "name": "Media",
+      "limit": 1,
+      "settings": [{ "type": "image_picker", "id": "image", "label": "Image" }]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CC Image with Text — Right",
+      "settings": { "variant": "image_right", "align": "left", "bg": "bg-white", "text": "text-neutral-900" },
+      "blocks": [{ "type": "kicker" }, { "type": "heading" }, { "type": "text" }, { "type": "buttons" }, { "type": "media" }]
+    },
+    {
+      "name": "CC Image with Text — Left",
+      "settings": { "variant": "image_left", "align": "left", "bg": "bg-neutral-50", "text": "text-neutral-900" },
+      "blocks": [{ "type": "kicker" }, { "type": "heading" }, { "type": "text" }, { "type": "buttons" }, { "type": "media" }]
+    },
+    {
+      "name": "CC Image with Text — Stacked",
+      "settings": { "variant": "stacked", "align": "center", "bg": "bg-neutral-950", "text": "text-white" },
+      "blocks": [{ "type": "kicker" }, { "type": "heading" }, { "type": "text" }, { "type": "buttons" }, { "type": "media" }]
+    }
+  ]
+}
+{% endschema %}

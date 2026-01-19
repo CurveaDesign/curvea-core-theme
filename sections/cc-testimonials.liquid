@@ -1,0 +1,212 @@
+{%- liquid
+  assign variant = section.settings.variant
+  assign container = section.settings.container
+  assign py = section.settings.py
+  assign bg = section.settings.bg
+  assign text = section.settings.text
+  assign align = section.settings.align
+  assign gap = section.settings.gap
+  assign pad_x = ''
+  assign classes = ''
+
+  assign list_class = ''
+  case variant
+    when 'cards'
+      assign list_class = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+    when 'list'
+      assign list_class = 'flex flex-col'
+    else
+      assign list_class = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+  endcase
+
+  assign text_align = ''
+  case align
+    when 'center'
+      assign text_align = 'text-center items-center'
+    when 'right'
+      assign text_align = 'text-right items-end'
+    else
+      assign text_align = 'text-left items-start'
+  endcase
+-%}
+
+<section class="{{ bg }} {{ text }} {{ py }}">
+  {% capture inner %}
+    <div class="flex flex-col {{ text_align }}">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'heading' -%}
+          <h2 {{ block.shopify_attributes }} class="text-3xl sm:text-4xl font-semibold tracking-tight">
+            {{ block.settings.text }}
+          </h2>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="mt-10 {{ list_class }} {{ gap }}">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'testimonial' -%}
+          <article {{ block.shopify_attributes }} class="flex flex-col gap-4 rounded-2xl border border-white/10 p-6">
+            <div class="text-base opacity-90">
+              {{ block.settings.quote }}
+            </div>
+            <div class="flex items-center gap-3">
+              {%- if block.settings.avatar != blank -%}
+                {{ block.settings.avatar | image_url: width: 120 | image_tag: class: 'h-10 w-10 rounded-full object-cover', loading: 'lazy' }}
+              {%- else -%}
+                <div class="h-10 w-10 rounded-full bg-white/10"></div>
+              {%- endif -%}
+              <div>
+                <p class="text-sm font-semibold">{{ block.settings.name }}</p>
+                <p class="text-xs opacity-70">{{ block.settings.meta }}</p>
+              </div>
+            </div>
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {% endcapture %}
+
+  {% render 'cc-container', size: container, pad_x: pad_x, classes: classes, content: inner %}
+</section>
+
+{% schema %}
+{
+  "name": "CC — Testimonials",
+  "tag": "section",
+  "class": "cc-testimonials",
+  "settings": [
+    {
+      "type": "select",
+      "id": "variant",
+      "label": "Layout variant",
+      "default": "cards",
+      "options": [
+        { "value": "cards", "label": "Cards" },
+        { "value": "list", "label": "List" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container width",
+      "default": "xl",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "Extra large" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Heading alignment",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "py",
+      "label": "Vertical spacing",
+      "default": "py-14 sm:py-20 lg:py-24",
+      "options": [
+        { "value": "py-10 sm:py-14", "label": "Compact" },
+        { "value": "py-14 sm:py-20 lg:py-24", "label": "Comfort" },
+        { "value": "py-20 sm:py-28 lg:py-32", "label": "Spacious" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "gap",
+      "label": "Card gap",
+      "default": "gap-6 lg:gap-8",
+      "options": [
+        { "value": "gap-4 lg:gap-6", "label": "Tight" },
+        { "value": "gap-6 lg:gap-8", "label": "Normal" },
+        { "value": "gap-8 lg:gap-12", "label": "Wide" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "bg",
+      "label": "Background",
+      "default": "bg-white",
+      "options": [
+        { "value": "bg-white", "label": "White" },
+        { "value": "bg-neutral-50", "label": "Soft light" },
+        { "value": "bg-neutral-950", "label": "Dark" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text",
+      "label": "Text color",
+      "default": "text-neutral-900",
+      "options": [
+        { "value": "text-neutral-900", "label": "Dark text" },
+        { "value": "text-neutral-800", "label": "Muted dark" },
+        { "value": "text-white", "label": "White text" }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "text", "label": "Heading", "default": "What customers say" }]
+    },
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "limit": 12,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "quote",
+          "label": "Quote",
+          "default": "<p>“The Curvea Core sections made our launch feel effortless.”</p>"
+        },
+        { "type": "text", "id": "name", "label": "Name", "default": "Jordan Lee" },
+        { "type": "text", "id": "meta", "label": "Meta", "default": "Founder, Northwind" },
+        { "type": "image_picker", "id": "avatar", "label": "Avatar" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CC Testimonials — Cards",
+      "settings": { "variant": "cards", "align": "left", "bg": "bg-white", "text": "text-neutral-900" },
+      "blocks": [
+        { "type": "heading" },
+        { "type": "testimonial" },
+        { "type": "testimonial" },
+        { "type": "testimonial" }
+      ]
+    },
+    {
+      "name": "CC Testimonials — List",
+      "settings": { "variant": "list", "align": "left", "bg": "bg-neutral-50", "text": "text-neutral-900" },
+      "blocks": [
+        { "type": "heading" },
+        { "type": "testimonial" },
+        { "type": "testimonial" }
+      ]
+    },
+    {
+      "name": "CC Testimonials — Dark",
+      "settings": { "variant": "cards", "align": "center", "bg": "bg-neutral-950", "text": "text-white" },
+      "blocks": [
+        { "type": "heading" },
+        { "type": "testimonial" },
+        { "type": "testimonial" },
+        { "type": "testimonial" }
+      ]
+    }
+  ]
+}
+{% endschema %}

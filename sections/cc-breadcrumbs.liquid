@@ -1,0 +1,60 @@
+{% if section.settings.enabled %}
+  {% unless request.page_type == 'index' %}
+    <nav class="text-sm" aria-label="Breadcrumb">
+      <ol class="flex flex-wrap items-center gap-2">
+        <li>
+          <a href="{{ routes.root_url }}" class="transition-opacity hover:opacity-75">Home</a>
+        </li>
+
+        {% if request.page_type == 'collection' and collection != blank %}
+          <li class="text-neutral-400">/</li>
+          <li>{{ collection.title }}</li>
+        {% elsif request.page_type == 'product' and product != blank %}
+          {% if collection != blank %}
+            <li class="text-neutral-400">/</li>
+            <li>
+              <a href="{{ collection.url }}" class="transition-opacity hover:opacity-75">{{ collection.title }}</a>
+            </li>
+          {% endif %}
+          <li class="text-neutral-400">/</li>
+          <li>{{ product.title }}</li>
+        {% elsif request.page_type == 'page' and page != blank %}
+          <li class="text-neutral-400">/</li>
+          <li>{{ page.title }}</li>
+        {% elsif request.page_type == 'blog' and blog != blank %}
+          <li class="text-neutral-400">/</li>
+          <li>{{ blog.title }}</li>
+        {% elsif request.page_type == 'article' and article != blank %}
+          <li class="text-neutral-400">/</li>
+          <li>
+            <a href="{{ blog.url }}" class="transition-opacity hover:opacity-75">{{ blog.title }}</a>
+          </li>
+          <li class="text-neutral-400">/</li>
+          <li>{{ article.title }}</li>
+        {% endif %}
+      </ol>
+    </nav>
+  {% endunless %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "CC Breadcrumbs",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Show breadcrumbs",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "CC Breadcrumbs - Light"
+    },
+    {
+      "name": "CC Breadcrumbs - Dark"
+    }
+  ]
+}
+{% endschema %}

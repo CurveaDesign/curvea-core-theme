@@ -1,0 +1,213 @@
+{%- liquid
+  assign variant = section.settings.variant
+  assign container = section.settings.container
+  assign py = section.settings.py
+  assign bg = section.settings.bg
+  assign text = section.settings.text
+  assign align = section.settings.align
+  assign gap = section.settings.gap
+  assign pad_x = ''
+  assign classes = ''
+
+  assign grid_class = ''
+  case variant
+    when 'grid'
+      assign grid_class = 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5'
+    when 'marquee_off'
+      assign grid_class = 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5'
+    else
+      assign grid_class = 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5'
+  endcase
+
+  assign text_align = ''
+  case align
+    when 'center'
+      assign text_align = 'text-center items-center'
+    when 'right'
+      assign text_align = 'text-right items-end'
+    else
+      assign text_align = 'text-left items-start'
+  endcase
+-%}
+
+<section class="{{ bg }} {{ text }} {{ py }}">
+  {% capture inner %}
+    <div class="flex flex-col {{ text_align }}">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'heading' -%}
+          <h2 {{ block.shopify_attributes }} class="text-2xl sm:text-3xl font-semibold tracking-tight">
+            {{ block.settings.text }}
+          </h2>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="mt-8 {{ grid_class }} {{ gap }} items-center">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'logo' -%}
+          {%- if block.settings.link != blank -%}
+            <a {{ block.shopify_attributes }} class="flex items-center justify-center rounded-xl border border-white/10 p-4" href="{{ block.settings.link }}">
+              {%- if block.settings.image != blank -%}
+                {{ block.settings.image | image_url: width: 240 | image_tag: class: 'h-10 w-auto', loading: 'lazy' }}
+              {%- else -%}
+                <span class="text-sm opacity-60">Logo</span>
+              {%- endif -%}
+            </a>
+          {%- else -%}
+            <div {{ block.shopify_attributes }} class="flex items-center justify-center rounded-xl border border-white/10 p-4">
+              {%- if block.settings.image != blank -%}
+                {{ block.settings.image | image_url: width: 240 | image_tag: class: 'h-10 w-auto', loading: 'lazy' }}
+              {%- else -%}
+                <span class="text-sm opacity-60">Logo</span>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {% endcapture %}
+
+  {% render 'cc-container', size: container, pad_x: pad_x, classes: classes, content: inner %}
+</section>
+
+{% schema %}
+{
+  "name": "CC — Logo Cloud",
+  "tag": "section",
+  "class": "cc-logo-cloud",
+  "settings": [
+    {
+      "type": "select",
+      "id": "variant",
+      "label": "Layout variant",
+      "default": "grid",
+      "options": [
+        { "value": "grid", "label": "Grid" },
+        { "value": "marquee_off", "label": "Grid (no marquee)" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container width",
+      "default": "xl",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "Extra large" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Heading alignment",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "py",
+      "label": "Vertical spacing",
+      "default": "py-14 sm:py-20 lg:py-24",
+      "options": [
+        { "value": "py-10 sm:py-14", "label": "Compact" },
+        { "value": "py-14 sm:py-20 lg:py-24", "label": "Comfort" },
+        { "value": "py-20 sm:py-28 lg:py-32", "label": "Spacious" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "gap",
+      "label": "Logo gap",
+      "default": "gap-6 lg:gap-8",
+      "options": [
+        { "value": "gap-4 lg:gap-6", "label": "Tight" },
+        { "value": "gap-6 lg:gap-8", "label": "Normal" },
+        { "value": "gap-8 lg:gap-12", "label": "Wide" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "bg",
+      "label": "Background",
+      "default": "bg-white",
+      "options": [
+        { "value": "bg-white", "label": "White" },
+        { "value": "bg-neutral-50", "label": "Soft light" },
+        { "value": "bg-neutral-950", "label": "Dark" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text",
+      "label": "Text color",
+      "default": "text-neutral-900",
+      "options": [
+        { "value": "text-neutral-900", "label": "Dark text" },
+        { "value": "text-neutral-800", "label": "Muted dark" },
+        { "value": "text-white", "label": "White text" }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "text", "label": "Heading", "default": "Trusted by" }]
+    },
+    {
+      "type": "logo",
+      "name": "Logo",
+      "limit": 20,
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Logo" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CC Logo Cloud — Grid",
+      "settings": { "variant": "grid", "align": "center", "bg": "bg-white", "text": "text-neutral-900" },
+      "blocks": [
+        { "type": "heading" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" }
+      ]
+    },
+    {
+      "name": "CC Logo Cloud — Soft",
+      "settings": { "variant": "marquee_off", "align": "center", "bg": "bg-neutral-50", "text": "text-neutral-900" },
+      "blocks": [
+        { "type": "heading" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" }
+      ]
+    },
+    {
+      "name": "CC Logo Cloud — Dark",
+      "settings": { "variant": "grid", "align": "center", "bg": "bg-neutral-950", "text": "text-white" },
+      "blocks": [
+        { "type": "heading" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,252 @@
+{%- liquid
+  assign variant = section.settings.variant
+  assign container = section.settings.container
+  assign py = section.settings.py
+  assign bg = section.settings.bg
+  assign text = section.settings.text
+  assign align = section.settings.align
+  assign gap = section.settings.gap
+  assign pad_x = ''
+  assign classes = ''
+
+  assign grid_class = ''
+  case variant
+    when 'columns_2'
+      assign grid_class = 'grid grid-cols-1 sm:grid-cols-2'
+    when 'columns_3'
+      assign grid_class = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+    when 'columns_4'
+      assign grid_class = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
+    else
+      assign grid_class = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+  endcase
+
+  assign text_align = ''
+  assign item_align = ''
+  case align
+    when 'center'
+      assign text_align = 'text-center items-center'
+      assign item_align = 'text-center items-center'
+    when 'right'
+      assign text_align = 'text-right items-end'
+      assign item_align = 'text-right items-end'
+    else
+      assign text_align = 'text-left items-start'
+      assign item_align = 'text-left items-start'
+  endcase
+-%}
+
+<section class="{{ bg }} {{ text }} {{ py }}">
+  {% capture inner %}
+    <div class="flex flex-col {{ text_align }}">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'kicker' -%}
+            <p {{ block.shopify_attributes }} class="text-sm font-medium opacity-80">
+              {{ block.settings.text }}
+            </p>
+          {%- when 'heading' -%}
+            <h2 {{ block.shopify_attributes }} class="mt-3 text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">
+              {{ block.settings.text }}
+            </h2>
+          {%- when 'text' -%}
+            <div {{ block.shopify_attributes }} class="mt-4 max-w-prose text-base sm:text-lg opacity-90">
+              {{ block.settings.text }}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="mt-10 {{ grid_class }} {{ gap }}">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'feature' -%}
+          <div {{ block.shopify_attributes }} class="flex flex-col gap-3 rounded-2xl border border-white/10 p-6 {{ item_align }}">
+            {%- if block.settings.icon != blank -%}
+              {{ block.settings.icon | image_url: width: 160 | image_tag: class: 'h-10 w-10', loading: 'lazy' }}
+            {%- endif -%}
+            <h3 class="text-lg font-semibold">
+              {{ block.settings.heading }}
+            </h3>
+            <div class="text-sm opacity-80">
+              {{ block.settings.text }}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {% endcapture %}
+
+  {% render 'cc-container', size: container, pad_x: pad_x, classes: classes, content: inner %}
+</section>
+
+{% schema %}
+{
+  "name": "CC — Feature Grid",
+  "tag": "section",
+  "class": "cc-feature-grid",
+  "settings": [
+    {
+      "type": "select",
+      "id": "variant",
+      "label": "Layout variant",
+      "default": "columns_3",
+      "options": [
+        { "value": "columns_2", "label": "Two columns" },
+        { "value": "columns_3", "label": "Three columns" },
+        { "value": "columns_4", "label": "Four columns" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container width",
+      "default": "xl",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "Extra large" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Text alignment",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "py",
+      "label": "Vertical spacing",
+      "default": "py-14 sm:py-20 lg:py-24",
+      "options": [
+        { "value": "py-10 sm:py-14", "label": "Compact" },
+        { "value": "py-14 sm:py-20 lg:py-24", "label": "Comfort" },
+        { "value": "py-20 sm:py-28 lg:py-32", "label": "Spacious" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "gap",
+      "label": "Grid gap",
+      "default": "gap-10 lg:gap-14",
+      "options": [
+        { "value": "gap-8 lg:gap-10", "label": "Tight" },
+        { "value": "gap-10 lg:gap-14", "label": "Normal" },
+        { "value": "gap-12 lg:gap-18", "label": "Wide" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "bg",
+      "label": "Background",
+      "default": "bg-white",
+      "options": [
+        { "value": "bg-white", "label": "White" },
+        { "value": "bg-neutral-50", "label": "Soft light" },
+        { "value": "bg-neutral-950", "label": "Dark" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text",
+      "label": "Text color",
+      "default": "text-neutral-900",
+      "options": [
+        { "value": "text-neutral-900", "label": "Dark text" },
+        { "value": "text-neutral-800", "label": "Muted dark" },
+        { "value": "text-white", "label": "White text" }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "kicker",
+      "name": "Kicker",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Why Curvea" }]
+    },
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "text", "label": "Heading", "default": "Feature highlights" }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Summarize the main differentiators with a tidy grid of benefits.</p>"
+        }
+      ]
+    },
+    {
+      "type": "feature",
+      "name": "Feature",
+      "limit": 12,
+      "settings": [
+        { "type": "image_picker", "id": "icon", "label": "Icon" },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Feature title" },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Describe the benefit in a concise, scannable sentence.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CC Feature Grid — 3 columns",
+      "settings": { "variant": "columns_3", "align": "left", "bg": "bg-white", "text": "text-neutral-900" },
+      "blocks": [
+        { "type": "kicker" },
+        { "type": "heading" },
+        { "type": "text" },
+        { "type": "feature" },
+        { "type": "feature" },
+        { "type": "feature" }
+      ]
+    },
+    {
+      "name": "CC Feature Grid — 2 columns",
+      "settings": { "variant": "columns_2", "align": "left", "bg": "bg-neutral-50", "text": "text-neutral-900" },
+      "blocks": [
+        { "type": "kicker" },
+        { "type": "heading" },
+        { "type": "text" },
+        { "type": "feature" },
+        { "type": "feature" },
+        { "type": "feature" },
+        { "type": "feature" }
+      ]
+    },
+    {
+      "name": "CC Feature Grid — 4 columns",
+      "settings": { "variant": "columns_4", "align": "center", "bg": "bg-neutral-950", "text": "text-white" },
+      "blocks": [
+        { "type": "kicker" },
+        { "type": "heading" },
+        { "type": "text" },
+        { "type": "feature" },
+        { "type": "feature" },
+        { "type": "feature" },
+        { "type": "feature" }
+      ]
+    }
+  ]
+}
+{% endschema %}

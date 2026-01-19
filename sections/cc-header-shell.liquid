@@ -1,0 +1,147 @@
+{% assign container_class = section.settings.container %}
+
+<header class="{{ section.settings.bg_class }} {{ section.settings.text_class }} {{ section.settings.py }}">
+  <div class="{{ container_class }} flex items-center justify-between gap-6">
+    <div class="flex items-center gap-3">
+      {% if section.settings.show_logo %}
+        <a href="{{ routes.root_url }}" class="flex items-center gap-3">
+          {% if section.settings.logo != blank %}
+            <img
+              src="{{ section.settings.logo | image_url: width: 240 }}"
+              alt="{{ shop.name | escape }}"
+              class="h-8 w-auto"
+              loading="lazy"
+              width="{{ section.settings.logo.width }}"
+              height="{{ section.settings.logo.height }}"
+            >
+          {% else %}
+            <span class="text-lg font-semibold">{{ shop.name }}</span>
+          {% endif %}
+        </a>
+      {% endif %}
+    </div>
+
+    {% if section.settings.menu != blank %}
+      <nav class="hidden md:flex {{ section.settings.alignment }} gap-6 text-sm">
+        {% for link in linklists[section.settings.menu].links %}
+          <a href="{{ link.url }}" class="transition-opacity hover:opacity-75">{{ link.title }}</a>
+        {% endfor %}
+      </nav>
+    {% endif %}
+
+    <div class="flex items-center gap-3 text-sm">
+      {% if section.settings.show_account %}
+        <a href="{{ routes.account_url }}" class="transition-opacity hover:opacity-75">Account</a>
+      {% endif %}
+      {% if section.settings.show_cart %}
+        <a href="{{ routes.cart_url }}" class="transition-opacity hover:opacity-75">Cart</a>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "CC Header Shell",
+  "settings": [
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container width",
+      "default": "cc-container",
+      "options": [
+        {
+          "value": "cc-container",
+          "label": "CC Container"
+        },
+        {
+          "value": "w-full px-4",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "bg_class",
+      "label": "Background classes",
+      "default": "bg-white"
+    },
+    {
+      "type": "text",
+      "id": "text_class",
+      "label": "Text classes",
+      "default": "text-neutral-900"
+    },
+    {
+      "type": "text",
+      "id": "py",
+      "label": "Padding classes",
+      "default": "py-4"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_logo",
+      "label": "Show logo",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Menu alignment",
+      "default": "justify-center",
+      "options": [
+        {
+          "value": "justify-start",
+          "label": "Left"
+        },
+        {
+          "value": "justify-center",
+          "label": "Center"
+        },
+        {
+          "value": "justify-end",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "Show account link",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart",
+      "label": "Show cart link",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "CC Header Shell - Light",
+      "settings": {
+        "bg_class": "bg-white",
+        "text_class": "text-neutral-900"
+      }
+    },
+    {
+      "name": "CC Header Shell - Dark",
+      "settings": {
+        "bg_class": "bg-neutral-900",
+        "text_class": "text-white"
+      }
+    }
+  ]
+}
+{% endschema %}
