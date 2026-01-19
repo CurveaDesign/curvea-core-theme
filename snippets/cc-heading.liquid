@@ -1,0 +1,37 @@
+{%- liquid
+  assign tag = tag | default: 'h2'
+  assign text_value = text
+  assign classes = classes | default: ''
+  assign align = align | default: ''
+  assign shopify_attributes = shopify_attributes | default: ''
+
+  assign align_class = ''
+  case align
+    when 'center'
+      assign align_class = 'text-center'
+    when 'right'
+      assign align_class = 'text-right'
+    when 'left'
+      assign align_class = 'text-left'
+  endcase
+
+  assign base_class = ''
+  case tag
+    when 'h1'
+      assign base_class = 'text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight'
+    when 'h2'
+      assign base_class = 'text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight'
+    when 'h3'
+      assign base_class = 'text-xl sm:text-2xl font-semibold tracking-tight'
+    when 'p'
+      assign base_class = 'text-base sm:text-lg'
+    else
+      assign base_class = 'text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight'
+  endcase
+-%}
+
+{%- if text_value != blank -%}
+  <{{ tag }}{% if shopify_attributes != blank %} {{ shopify_attributes }}{% endif %} class="{{ base_class }} {{ align_class }} {{ classes }}">
+    {{ text_value }}
+  </{{ tag }}>
+{%- endif -%}

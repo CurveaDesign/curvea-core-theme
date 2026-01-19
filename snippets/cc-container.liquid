@@ -3,6 +3,10 @@
   assign pad_x = pad_x | default: 'px-4 sm:px-6 lg:px-8'
   assign classes = classes | default: ''
 
+  if pad_x == blank
+    assign pad_x = 'px-4 sm:px-6 lg:px-8'
+  endif
+
   case size
     when 'sm'
       assign maxw = 'max-w-3xl'

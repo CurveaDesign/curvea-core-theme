@@ -1,0 +1,24 @@
+{%- liquid
+  assign label = label
+  assign href = href
+  assign variant = variant | default: 'primary'
+  assign classes = classes | default: ''
+
+  assign base_class = 'inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-medium transition-colors'
+  assign variant_class = ''
+
+  case variant
+    when 'secondary'
+      assign variant_class = 'border border-current/20 bg-transparent hover:bg-current/10'
+    when 'ghost'
+      assign variant_class = 'border border-transparent bg-transparent hover:bg-current/10'
+    else
+      assign variant_class = 'border border-current/30 bg-current/10 hover:bg-current/15'
+  endcase
+-%}
+
+{%- if label != blank and href != blank -%}
+  <a href="{{ href }}" class="{{ base_class }} {{ variant_class }} {{ classes }}">
+    {{ label }}
+  </a>
+{%- endif -%}

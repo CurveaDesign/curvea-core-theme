@@ -35,9 +35,7 @@
     <div class="flex flex-col {{ text_align }}">
       {%- for block in section.blocks -%}
         {%- if block.type == 'heading' -%}
-          <h2 {{ block.shopify_attributes }} class="text-3xl sm:text-4xl font-semibold tracking-tight">
-            {{ block.settings.text }}
-          </h2>
+          {% render 'cc-heading', tag: 'h2', text: block.settings.text, classes: 'text-3xl sm:text-4xl font-semibold tracking-tight', align: align, shopify_attributes: block.shopify_attributes %}
         {%- endif -%}
       {%- endfor -%}
     </div>
@@ -46,17 +44,17 @@
       {%- for block in section.blocks -%}
         {%- if block.type == 'faq' -%}
           {%- if variant == 'accordion' -%}
-            <details {{ block.shopify_attributes }} class="rounded-2xl border border-white/10 p-6">
-              <summary class="cursor-pointer text-base font-semibold">
-                {{ block.settings.question }}
+            <details {{ block.shopify_attributes }} class="rounded-2xl border border-current/10 p-6">
+              <summary class="cursor-pointer">
+                {% render 'cc-heading', tag: 'p', text: block.settings.question, classes: 'text-base font-semibold', align: align %}
               </summary>
               <div class="mt-3 text-sm opacity-85">
                 {{ block.settings.answer }}
               </div>
             </details>
           {%- else -%}
-            <div {{ block.shopify_attributes }} class="rounded-2xl border border-white/10 p-6">
-              <h3 class="text-base font-semibold">{{ block.settings.question }}</h3>
+            <div {{ block.shopify_attributes }} class="rounded-2xl border border-current/10 p-6">
+              {% render 'cc-heading', tag: 'h3', text: block.settings.question, classes: 'text-base font-semibold', align: align %}
               <div class="mt-3 text-sm opacity-85">
                 {{ block.settings.answer }}
               </div>
