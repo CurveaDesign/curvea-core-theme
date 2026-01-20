@@ -1400,6 +1400,60 @@
     ]
   },
   {
+    "name": "Curvea Core — Commerce",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cc_cart_mode",
+        "label": "Cart mode",
+        "options": [
+          {
+            "value": "drawer",
+            "label": "Drawer"
+          },
+          {
+            "value": "page",
+            "label": "Page"
+          }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "cc_disable_atc_global",
+        "label": "Disable add to cart (global)",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "cc_disable_atc_mode",
+        "label": "Disabled add to cart behavior",
+        "options": [
+          {
+            "value": "hide",
+            "label": "Hide add to cart"
+          },
+          {
+            "value": "cta",
+            "label": "Show contact CTA"
+          }
+        ],
+        "default": "hide"
+      },
+      {
+        "type": "text",
+        "id": "cc_disable_atc_label",
+        "label": "Disabled add to cart label",
+        "default": "Contact us"
+      },
+      {
+        "type": "url",
+        "id": "cc_disable_atc_link",
+        "label": "Disabled add to cart link"
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.cart.name",
     "settings": [
       {

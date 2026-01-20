@@ -22,12 +22,22 @@
       if block.settings.show_dynamic_checkout and gift_card_recipient_feature_active == false
         assign show_dynamic_checkout = true
       endif
+      # CC: Disable add-to-cart via theme setting or product metafield.
+      assign cc_product_disable_atc = false
+      if product.metafields.custom.disable_atc != blank and product.metafields.custom.disable_atc.value == true
+        assign cc_product_disable_atc = true
+      endif
+      assign cc_disable_atc = settings.cc_disable_atc_global or cc_product_disable_atc
+      if cc_disable_atc
+        assign show_dynamic_checkout = false
+      endif
     -%}
 
     <product-form
       class="product-form"
       data-hide-errors="{{ gift_card_recipient_feature_active }}"
       data-section-id="{{ section.id }}"
+      data-cc-cart-mode="{{ settings.cc_cart_mode }}" {# CC: Cart mode toggle. #}
     >
       <div class="product-form__error-message-wrapper" role="alert" hidden>
         <span class="svg-wrapper">
@@ -70,31 +80,52 @@
               assign quantity_rule_soldout = true
             endif
           -%}
-          <button
-            id="ProductSubmitButton-{{ section_id }}"
-            type="submit"
-            name="add"
-            class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
-            {% if product.selected_or_first_available_variant.available == false
-              or quantity_rule_soldout
-              or product.selected_or_first_available_variant == null
-            %}
-              disabled
-            {% endif %}
-          >
-            <span>
-              {%- if product.selected_or_first_available_variant == null -%}
-                {{ 'products.product.unavailable' | t }}
-              {%- elsif product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
-                {{ 'products.product.sold_out' | t }}
+          {%- if cc_disable_atc -%}
+            {%- if settings.cc_disable_atc_mode == 'cta' -%}
+              {%- if settings.cc_disable_atc_link != blank -%}
+                <a
+                  class="product-form__submit button button--full-width button--primary"
+                  href="{{ settings.cc_disable_atc_link }}"
+                >
+                  {{ settings.cc_disable_atc_label }}
+                </a>
               {%- else -%}
-                {{ 'products.product.add_to_cart' | t }}
+                <button
+                  type="button"
+                  class="product-form__submit button button--full-width button--primary"
+                  disabled
+                >
+                  {{ settings.cc_disable_atc_label }}
+                </button>
               {%- endif -%}
-            </span>
-            {%- render 'loading-spinner' -%}
-          </button>
-          {%- if show_dynamic_checkout -%}
-            {{ form | payment_button }}
+            {%- endif -%}
+          {%- else -%}
+            <button
+              id="ProductSubmitButton-{{ section_id }}"
+              type="submit"
+              name="add"
+              class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
+              {% if product.selected_or_first_available_variant.available == false
+                or quantity_rule_soldout
+                or product.selected_or_first_available_variant == null
+              %}
+                disabled
+              {% endif %}
+            >
+              <span>
+                {%- if product.selected_or_first_available_variant == null -%}
+                  {{ 'products.product.unavailable' | t }}
+                {%- elsif product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
+                  {{ 'products.product.sold_out' | t }}
+                {%- else -%}
+                  {{ 'products.product.add_to_cart' | t }}
+                {%- endif -%}
+              </span>
+              {%- render 'loading-spinner' -%}
+            </button>
+            {%- if show_dynamic_checkout -%}
+              {{ form | payment_button }}
+            {%- endif -%}
           {%- endif -%}
         </div>
       {%- endform -%}
