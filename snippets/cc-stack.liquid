@@ -1,0 +1,8 @@
+{%- liquid
+  assign gap = gap | default: 'gap-4'
+  assign classes = classes | default: ''
+-%}
+
+<div class="flex flex-col {{ gap }} {{ classes }}">
+  {{ content }}
+</div>
