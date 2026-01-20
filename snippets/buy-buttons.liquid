@@ -5,11 +5,18 @@
   - block: {Object} passing the block information.
   - product_form_id: {String} product form id.
   - section_id: {String} id of section to which this snippet belongs.
-  - show_pickup_availability: {Boolean} for the pickup availability. If true the pickup availability is rendered, false - not rendered (optional).
+  - show_pickup_availability: {Boolean} for the pickup availability.
 
   Usage:
-  {% render 'buy-buttons', block: block, product: product, product_form_id: product_form_id, section_id: section.id, show_pickup_availability: true %}
+  {% render 'buy-buttons',
+    block: block,
+    product: product,
+    product_form_id: product_form_id,
+    section_id: section.id,
+    show_pickup_availability: true
+  %}
 {% endcomment %}
+
 <div {{ block.shopify_attributes }}>
   {%- if product != blank -%}
     {%- liquid
@@ -22,12 +29,21 @@
       if block.settings.show_dynamic_checkout and gift_card_recipient_feature_active == false
         assign show_dynamic_checkout = true
       endif
-      # CC: Disable add-to-cart via theme setting or product metafield.
+
+      # CC: Per-product ATC disable (metafield)
       assign cc_product_disable_atc = false
-      if product.metafields.custom.disable_atc != blank and product.metafields.custom.disable_atc.value == true
-        assign cc_product_disable_atc = true
+      if product.metafields.custom.disable_atc != blank
+        if product.metafields.custom.disable_atc.value == true
+          assign cc_product_disable_atc = true
+        endif
       endif
-      assign cc_disable_atc = settings.cc_disable_atc_global or cc_product_disable_atc
+
+      # CC: Global OR product-level disable
+      assign cc_disable_atc = false
+      if settings.cc_disable_atc_global == true or cc_product_disable_atc == true
+        assign cc_disable_atc = true
+      endif
+
       if cc_disable_atc
         assign show_dynamic_checkout = false
       endif
@@ -37,11 +53,11 @@
       class="product-form"
       data-hide-errors="{{ gift_card_recipient_feature_active }}"
       data-section-id="{{ section.id }}"
-      data-cc-cart-mode="{{ settings.cc_cart_mode }}" {# CC: Cart mode toggle. #}
+      data-cc-cart-mode="{{ settings.cc_cart_mode }}"
     >
       <div class="product-form__error-message-wrapper" role="alert" hidden>
         <span class="svg-wrapper">
-          {{- 'icon-error.svg' | inline_asset_content -}}
+          {{ 'icon-error.svg' | inline_asset_content }}
         </span>
         <span class="product-form__error-message"></span>
       </div>
@@ -57,29 +73,41 @@
           type="hidden"
           name="id"
           value="{{ product.selected_or_first_available_variant.id }}"
-          {% if product.selected_or_first_available_variant.available == false
-            or quantity_rule_soldout
-            or product.selected_or_first_available_variant == null
+          class="product-variant-id"
+          {% if product.selected_or_first_available_variant == null
+            or product.selected_or_first_available_variant.available == false
           %}
             disabled
           {% endif %}
-          class="product-variant-id"
         >
 
         {%- if gift_card_recipient_feature_active -%}
-          {%- render 'gift-card-recipient-form', product: product, form: form, section: section -%}
+          {%- render 'gift-card-recipient-form',
+            product: product,
+            form: form,
+            section: section
+          -%}
         {%- endif -%}
 
         <div class="product-form__buttons">
           {%- liquid
             assign check_against_inventory = true
-            if product.selected_or_first_available_variant.inventory_management != 'shopify' or product.selected_or_first_available_variant.inventory_policy == 'continue'
+            if product.selected_or_first_available_variant.inventory_management != 'shopify'
               assign check_against_inventory = false
             endif
-            if product.selected_or_first_available_variant.quantity_rule.min > product.selected_or_first_available_variant.inventory_quantity and check_against_inventory
-              assign quantity_rule_soldout = true
+            if product.selected_or_first_available_variant.inventory_policy == 'continue'
+              assign check_against_inventory = false
+            endif
+
+            assign quantity_rule_soldout = false
+            if check_against_inventory
+              if product.selected_or_first_available_variant.quantity_rule.min
+                > product.selected_or_first_available_variant.inventory_quantity
+                assign quantity_rule_soldout = true
+              endif
             endif
           -%}
+
           {%- if cc_disable_atc -%}
             {%- if settings.cc_disable_atc_mode == 'cta' -%}
               {%- if settings.cc_disable_atc_link != blank -%}
@@ -105,9 +133,9 @@
               type="submit"
               name="add"
               class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
-              {% if product.selected_or_first_available_variant.available == false
+              {% if product.selected_or_first_available_variant == null
+                or product.selected_or_first_available_variant.available == false
                 or quantity_rule_soldout
-                or product.selected_or_first_available_variant == null
               %}
                 disabled
               {% endif %}
@@ -123,6 +151,7 @@
               </span>
               {%- render 'loading-spinner' -%}
             </button>
+
             {%- if show_dynamic_checkout -%}
               {{ form | payment_button }}
             {%- endif -%}
@@ -148,27 +177,31 @@
   {%- if show_pickup_availability -%}
     {{ 'component-pickup-availability.css' | asset_url | stylesheet_tag }}
 
-    {%- assign pick_up_availabilities = product.selected_or_first_available_variant.store_availabilities
+    {%- assign pick_up_availabilities =
+      product.selected_or_first_available_variant.store_availabilities
       | where: 'pick_up_enabled', true
     -%}
 
     <pickup-availability
       class="product__pickup-availabilities quick-add-hidden"
-      {% if product.selected_or_first_available_variant.available and pick_up_availabilities.size > 0 %}
+      {% if product.selected_or_first_available_variant.available
+        and pick_up_availabilities.size > 0
+      %}
         available
       {% endif %}
       data-root-url="{{ routes.root_url }}"
       data-variant-id="{{ product.selected_or_first_available_variant.id }}"
       data-has-only-default-variant="{{ product.has_only_default_variant }}"
-      data-product-page-color-scheme="gradient color-{{ section.settings.color_scheme }}"
     >
       <template>
         <pickup-availability-preview class="pickup-availability-preview">
           <span class="svg-wrapper">
-            {{- 'icon-unavailable.svg' | inline_asset_content -}}
+            {{ 'icon-unavailable.svg' | inline_asset_content }}
           </span>
           <div class="pickup-availability-info">
-            <p class="caption-large">{{ 'products.product.pickup_availability.unavailable' | t }}</p>
+            <p class="caption-large">
+              {{ 'products.product.pickup_availability.unavailable' | t }}
+            </p>
             <button class="pickup-availability-button link link--text underlined-link">
               {{ 'products.product.pickup_availability.refresh' | t }}
             </button>
@@ -177,6 +210,6 @@
       </template>
     </pickup-availability>
 
-    <script src="{{ 'pickup-availability.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'pickup-availability.js' | asset_url }}" defer></script>
   {%- endif -%}
 </div>
