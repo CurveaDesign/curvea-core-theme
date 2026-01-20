@@ -1,0 +1,294 @@
+{%- liquid
+  assign container_size = section.settings.container
+  assign align = section.settings.align
+  assign py = section.settings.py
+  assign bg = section.settings.bg
+  assign text = section.settings.text
+  assign gap = section.settings.gap
+
+  assign align_class = 'text-left'
+  assign items_class = 'items-start'
+  case align
+    when 'center'
+      assign align_class = 'text-center'
+      assign items_class = 'items-center'
+    when 'right'
+      assign align_class = 'text-right'
+      assign items_class = 'items-end'
+  endcase
+
+  assign py_class = 'py-10 sm:py-14'
+  case py
+    when 'compact'
+      assign py_class = 'py-8 sm:py-10'
+    when 'spacious'
+      assign py_class = 'py-14 sm:py-20'
+  endcase
+
+  assign bg_class = 'bg-white'
+  case bg
+    when 'neutral-50'
+      assign bg_class = 'bg-neutral-50'
+    when 'neutral-950'
+      assign bg_class = 'bg-neutral-950'
+  endcase
+
+  assign text_class = 'text-neutral-900'
+  if text == 'white'
+    assign text_class = 'text-white'
+  endif
+
+  assign gap_class = 'gap-6'
+  case gap
+    when 'tight'
+      assign gap_class = 'gap-4'
+    when 'wide'
+      assign gap_class = 'gap-10'
+  endcase
+-%}
+
+<section class="cc-section {{ py_class }} {{ bg_class }} {{ text_class }}">
+  {%- capture header_content -%}
+    {%- render 'cc-heading', tag: 'h2', text: section.settings.heading, align: align -%}
+    {%- render 'cc-heading', tag: 'p', text: section.settings.subheading, align: align, classes: 'text-base text-current/70' -%}
+  {%- endcapture -%}
+
+  {%- capture form_content -%}
+    <div class="cc-card flex flex-col {{ gap_class }}">
+      {%- if section.settings.embed_html != blank -%}
+        {{ section.settings.embed_html }}
+      {%- else -%}
+        <form class="flex flex-col gap-4" method="post" action="/contact#contact_form">
+          <label class="text-sm font-medium" for="NewsletterEmail-{{ section.id }}">{{ section.settings.fallback_label }}</label>
+          <input
+            id="NewsletterEmail-{{ section.id }}"
+            type="email"
+            name="contact[email]"
+            placeholder="{{ section.settings.fallback_placeholder }}"
+            class="w-full rounded-xl border border-current/20 bg-transparent px-4 py-3 text-sm"
+            required
+          >
+          {%- if section.settings.button_link != blank -%}
+            {%- render 'cc-button', label: section.settings.button_label, href: section.settings.button_link, variant: section.settings.button_variant, classes: 'self-start' -%}
+          {%- else -%}
+            <button type="submit" class="cc-btn cc-btn--primary self-start">
+              {{ section.settings.button_label }}
+            </button>
+          {%- endif -%}
+        </form>
+      {%- endif -%}
+    </div>
+  {%- endcapture -%}
+
+  {%- capture media_content -%}
+    {%- if section.settings.image != blank -%}
+      <div class="cc-card">
+        {%- render 'cc-media', image: section.settings.image, aspect: section.settings.image_aspect -%}
+      </div>
+    {%- endif -%}
+  {%- endcapture -%}
+
+  {%- capture section_content -%}
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center">
+      <div class="flex flex-col {{ gap_class }} {{ align_class }}">
+        {%- render 'cc-stack', gap: gap_class, classes: '', content: header_content -%}
+        {{ form_content }}
+        {%- if section.blocks.size > 0 -%}
+          <div class="text-sm text-current/70">
+            {%- for block in section.blocks -%}
+              <div {{ block.shopify_attributes }}>{{ block.settings.note }}</div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+      {{ media_content }}
+    </div>
+  {%- endcapture -%}
+
+  {%- render 'cc-container', size: container_size, content: section_content -%}
+</section>
+
+{% schema %}
+{
+  "name": "CC Newsletter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Join the list"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "New releases, tips, and updates delivered monthly."
+    },
+    {
+      "type": "textarea",
+      "id": "embed_html",
+      "label": "Embed HTML",
+      "info": "Paste Klaviyo or Mailchimp embed code."
+    },
+    {
+      "type": "text",
+      "id": "fallback_label",
+      "label": "Fallback label",
+      "default": "Email address"
+    },
+    {
+      "type": "text",
+      "id": "fallback_placeholder",
+      "label": "Fallback placeholder",
+      "default": "you@example.com"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Subscribe"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "info": "Used for fallback button if you prefer a link instead of a form submit."
+    },
+    {
+      "type": "select",
+      "id": "button_variant",
+      "label": "Button style",
+      "default": "primary",
+      "options": [
+        { "value": "primary", "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" },
+        { "value": "ghost", "label": "Ghost" }
+      ]
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Optional image"
+    },
+    {
+      "type": "select",
+      "id": "image_aspect",
+      "label": "Image aspect",
+      "default": "4/3",
+      "options": [
+        { "value": "16/10", "label": "16:10" },
+        { "value": "4/3", "label": "4:3" },
+        { "value": "1/1", "label": "1:1" },
+        { "value": "3/4", "label": "3:4" },
+        { "value": "auto", "label": "Auto" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container width",
+      "default": "lg",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "Extra large" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "py",
+      "label": "Vertical spacing",
+      "default": "comfort",
+      "options": [
+        { "value": "compact", "label": "Compact" },
+        { "value": "comfort", "label": "Comfort" },
+        { "value": "spacious", "label": "Spacious" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "bg",
+      "label": "Background",
+      "default": "white",
+      "options": [
+        { "value": "white", "label": "White" },
+        { "value": "neutral-50", "label": "Neutral 50" },
+        { "value": "neutral-950", "label": "Neutral 950" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text",
+      "label": "Text color",
+      "default": "dark",
+      "options": [
+        { "value": "dark", "label": "Dark" },
+        { "value": "white", "label": "White" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Text alignment",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "gap",
+      "label": "Gap",
+      "default": "normal",
+      "options": [
+        { "value": "tight", "label": "Tight" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "wide", "label": "Wide" }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "note",
+      "name": "Note",
+      "settings": [
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Note",
+          "default": "No spam. Unsubscribe anytime."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Classic",
+      "blocks": [
+        { "type": "note" }
+      ]
+    },
+    {
+      "name": "Split",
+      "blocks": [
+        { "type": "note" }
+      ]
+    },
+    {
+      "name": "Minimal",
+      "blocks": [
+        { "type": "note" }
+      ]
+    },
+    {
+      "name": "Editorial",
+      "blocks": [
+        { "type": "note" }
+      ]
+    }
+  ]
+}
+{% endschema %}

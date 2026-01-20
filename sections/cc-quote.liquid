@@ -1,0 +1,239 @@
+{%- liquid
+  assign container_size = section.settings.container
+  assign align = section.settings.align
+  assign py = section.settings.py
+  assign bg = section.settings.bg
+  assign text = section.settings.text
+  assign gap = section.settings.gap
+
+  assign align_class = 'text-left'
+  case align
+    when 'center'
+      assign align_class = 'text-center'
+    when 'right'
+      assign align_class = 'text-right'
+  endcase
+
+  assign py_class = 'py-10 sm:py-14'
+  case py
+    when 'compact'
+      assign py_class = 'py-8 sm:py-10'
+    when 'spacious'
+      assign py_class = 'py-14 sm:py-20'
+  endcase
+
+  assign bg_class = 'bg-white'
+  case bg
+    when 'neutral-50'
+      assign bg_class = 'bg-neutral-50'
+    when 'neutral-950'
+      assign bg_class = 'bg-neutral-950'
+  endcase
+
+  assign text_class = 'text-neutral-900'
+  if text == 'white'
+    assign text_class = 'text-white'
+  endif
+
+  assign gap_class = 'gap-6'
+  case gap
+    when 'tight'
+      assign gap_class = 'gap-4'
+    when 'wide'
+      assign gap_class = 'gap-10'
+  endcase
+-%}
+
+<section class="cc-section {{ py_class }} {{ bg_class }} {{ text_class }}">
+  {%- capture quote_content -%}
+    {%- assign quote_block = section.blocks.first -%}
+    <div class="cc-card grid gap-8 lg:grid-cols-[auto,1fr] lg:items-center">
+      {%- if quote_block != blank and quote_block.settings.image != blank -%}
+        <div class="w-28">
+          {%- render 'cc-media', image: quote_block.settings.image, aspect: '1/1', classes: 'w-28 rounded-full overflow-hidden' -%}
+        </div>
+      {%- endif -%}
+      <div class="flex flex-col {{ gap_class }} {{ align_class }}">
+        {%- if quote_block != blank -%}
+          {%- render 'cc-heading', tag: 'h2', text: quote_block.settings.quote, align: align, classes: 'text-2xl sm:text-3xl font-semibold' -%}
+          <div class="text-sm text-current/70">
+            <div class="font-semibold text-current">{{ quote_block.settings.author }}</div>
+            <div>{{ quote_block.settings.role }}</div>
+          </div>
+        {%- else -%}
+          {%- render 'cc-heading', tag: 'h2', text: 'Add a quote block to highlight a testimonial.', align: align, classes: 'text-2xl sm:text-3xl font-semibold' -%}
+        {%- endif -%}
+        {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+          {%- render 'cc-button', label: section.settings.button_label, href: section.settings.button_link, variant: section.settings.button_variant -%}
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endcapture -%}
+
+  {%- capture section_content -%}
+    {%- render 'cc-heading', tag: 'h2', text: section.settings.heading, align: align -%}
+    {{ quote_content }}
+  {%- endcapture -%}
+
+  {%- render 'cc-container', size: container_size, content: section_content -%}
+</section>
+
+{% schema %}
+{
+  "name": "CC Quote",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What people are saying"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Read more"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "button_variant",
+      "label": "Button style",
+      "default": "secondary",
+      "options": [
+        { "value": "primary", "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" },
+        { "value": "ghost", "label": "Ghost" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container width",
+      "default": "md",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "Extra large" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "py",
+      "label": "Vertical spacing",
+      "default": "comfort",
+      "options": [
+        { "value": "compact", "label": "Compact" },
+        { "value": "comfort", "label": "Comfort" },
+        { "value": "spacious", "label": "Spacious" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "bg",
+      "label": "Background",
+      "default": "white",
+      "options": [
+        { "value": "white", "label": "White" },
+        { "value": "neutral-50", "label": "Neutral 50" },
+        { "value": "neutral-950", "label": "Neutral 950" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text",
+      "label": "Text color",
+      "default": "dark",
+      "options": [
+        { "value": "dark", "label": "Dark" },
+        { "value": "white", "label": "White" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Text alignment",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "gap",
+      "label": "Gap",
+      "default": "normal",
+      "options": [
+        { "value": "tight", "label": "Tight" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "wide", "label": "Wide" }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "quote",
+      "name": "Quote",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "quote",
+          "label": "Quote",
+          "default": "\"The team delivered a seamless experience from day one.\""
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author",
+          "default": "Alex Morgan"
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "Role",
+          "default": "Head of Operations"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Author image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Classic",
+      "blocks": [
+        { "type": "quote" }
+      ]
+    },
+    {
+      "name": "Split",
+      "blocks": [
+        { "type": "quote" }
+      ]
+    },
+    {
+      "name": "Minimal",
+      "blocks": [
+        { "type": "quote" }
+      ]
+    },
+    {
+      "name": "Editorial",
+      "blocks": [
+        { "type": "quote" }
+      ]
+    }
+  ]
+}
+{% endschema %}

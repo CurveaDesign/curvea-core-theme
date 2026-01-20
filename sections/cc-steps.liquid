@@ -1,0 +1,253 @@
+{%- liquid
+  assign container_size = section.settings.container
+  assign align = section.settings.align
+  assign py = section.settings.py
+  assign bg = section.settings.bg
+  assign text = section.settings.text
+  assign gap = section.settings.gap
+
+  assign align_class = 'text-left'
+  assign items_class = 'items-start'
+  case align
+    when 'center'
+      assign align_class = 'text-center'
+      assign items_class = 'items-center'
+    when 'right'
+      assign align_class = 'text-right'
+      assign items_class = 'items-end'
+  endcase
+
+  assign py_class = 'py-10 sm:py-14'
+  case py
+    when 'compact'
+      assign py_class = 'py-8 sm:py-10'
+    when 'spacious'
+      assign py_class = 'py-14 sm:py-20'
+  endcase
+
+  assign bg_class = 'bg-white'
+  case bg
+    when 'neutral-50'
+      assign bg_class = 'bg-neutral-50'
+    when 'neutral-950'
+      assign bg_class = 'bg-neutral-950'
+  endcase
+
+  assign text_class = 'text-neutral-900'
+  if text == 'white'
+    assign text_class = 'text-white'
+  endif
+
+  assign gap_class = 'gap-6'
+  case gap
+    when 'tight'
+      assign gap_class = 'gap-4'
+    when 'wide'
+      assign gap_class = 'gap-10'
+  endcase
+-%}
+
+<section class="cc-section {{ py_class }} {{ bg_class }} {{ text_class }}">
+  {%- capture header_content -%}
+    {%- render 'cc-heading', tag: 'h2', text: section.settings.heading, align: align -%}
+    {%- render 'cc-heading', tag: 'p', text: section.settings.subheading, align: align, classes: 'text-base text-current/70' -%}
+    {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+      {%- render 'cc-button', label: section.settings.button_label, href: section.settings.button_link, variant: section.settings.button_variant -%}
+    {%- endif -%}
+  {%- endcapture -%}
+
+  {%- capture steps_content -%}
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      {%- for block in section.blocks -%}
+        <div class="cc-card flex flex-col {{ gap_class }}" {{ block.shopify_attributes }}>
+          <div class="flex items-center justify-between">
+            <div class="text-xs font-semibold uppercase tracking-wide text-current/60">Step {{ forloop.index }}</div>
+            {%- if block.settings.icon != blank -%}
+              <div class="w-10">
+                {%- render 'cc-media', image: block.settings.icon, aspect: '1/1', classes: 'w-10' -%}
+              </div>
+            {%- endif -%}
+          </div>
+          <div class="text-lg font-semibold">{{ block.settings.title }}</div>
+          {%- if block.settings.text != blank -%}
+            <p class="text-sm text-current/70">{{ block.settings.text }}</p>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  {%- endcapture -%}
+
+  {%- capture section_content -%}
+    {%- render 'cc-stack', gap: gap_class, classes: align_class, content: header_content -%}
+    {{ steps_content }}
+  {%- endcapture -%}
+
+  {%- render 'cc-container', size: container_size, content: section_content -%}
+</section>
+
+{% schema %}
+{
+  "name": "CC Steps",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "How it works"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Simple steps to get started quickly."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Get started"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "button_variant",
+      "label": "Button style",
+      "default": "primary",
+      "options": [
+        { "value": "primary", "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" },
+        { "value": "ghost", "label": "Ghost" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container width",
+      "default": "lg",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "Extra large" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "py",
+      "label": "Vertical spacing",
+      "default": "comfort",
+      "options": [
+        { "value": "compact", "label": "Compact" },
+        { "value": "comfort", "label": "Comfort" },
+        { "value": "spacious", "label": "Spacious" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "bg",
+      "label": "Background",
+      "default": "white",
+      "options": [
+        { "value": "white", "label": "White" },
+        { "value": "neutral-50", "label": "Neutral 50" },
+        { "value": "neutral-950", "label": "Neutral 950" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text",
+      "label": "Text color",
+      "default": "dark",
+      "options": [
+        { "value": "dark", "label": "Dark" },
+        { "value": "white", "label": "White" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Text alignment",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "gap",
+      "label": "Gap",
+      "default": "normal",
+      "options": [
+        { "value": "tight", "label": "Tight" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "wide", "label": "Wide" }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Choose your plan"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Pick the package that fits your goals."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Classic",
+      "blocks": [
+        { "type": "step" },
+        { "type": "step" },
+        { "type": "step" }
+      ]
+    },
+    {
+      "name": "Split",
+      "blocks": [
+        { "type": "step" },
+        { "type": "step" },
+        { "type": "step" },
+        { "type": "step" }
+      ]
+    },
+    {
+      "name": "Minimal",
+      "blocks": [
+        { "type": "step" },
+        { "type": "step" }
+      ]
+    },
+    {
+      "name": "Editorial",
+      "blocks": [
+        { "type": "step" },
+        { "type": "step" },
+        { "type": "step" }
+      ]
+    }
+  ]
+}
+{% endschema %}
