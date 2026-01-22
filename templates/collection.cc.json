@@ -1,0 +1,64 @@
+{
+  "sections": {
+    "hero": {
+      "type": "cc-hero-core",
+      "blocks": {
+        "hero-kicker": {
+          "type": "kicker",
+          "settings": {}
+        },
+        "hero-heading": {
+          "type": "heading",
+          "settings": {}
+        },
+        "hero-text": {
+          "type": "text",
+          "settings": {}
+        },
+        "hero-buttons": {
+          "type": "buttons",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "hero-kicker",
+        "hero-heading",
+        "hero-text",
+        "hero-buttons"
+      ],
+      "settings": {
+        "variant": "minimal",
+        "align": "left",
+        "bg": "bg-white",
+        "text": "text-neutral-900"
+      }
+    },
+    "collection-grid": {
+      "type": "cc-collection-grid",
+      "blocks": {
+        "collection-grid-1": {
+          "type": "collection",
+          "settings": {}
+        },
+        "collection-grid-2": {
+          "type": "collection",
+          "settings": {}
+        },
+        "collection-grid-3": {
+          "type": "collection",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "collection-grid-1",
+        "collection-grid-2",
+        "collection-grid-3"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "collection-grid"
+  ]
+}

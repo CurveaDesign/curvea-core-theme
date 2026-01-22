@@ -1,0 +1,215 @@
+{
+  "sections": {
+    "hero": {
+      "type": "cc-hero-core",
+      "blocks": {
+        "hero-kicker": {
+          "type": "kicker",
+          "settings": {}
+        },
+        "hero-heading": {
+          "type": "heading",
+          "settings": {}
+        },
+        "hero-text": {
+          "type": "text",
+          "settings": {}
+        },
+        "hero-buttons": {
+          "type": "buttons",
+          "settings": {}
+        },
+        "hero-media": {
+          "type": "media",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "hero-kicker",
+        "hero-heading",
+        "hero-text",
+        "hero-buttons",
+        "hero-media"
+      ],
+      "settings": {
+        "variant": "split_left",
+        "align": "left",
+        "bg": "bg-neutral-50",
+        "text": "text-neutral-900"
+      }
+    },
+    "feature-grid": {
+      "type": "cc-feature-grid",
+      "blocks": {
+        "feature-grid-kicker": {
+          "type": "kicker",
+          "settings": {}
+        },
+        "feature-grid-heading": {
+          "type": "heading",
+          "settings": {}
+        },
+        "feature-grid-text": {
+          "type": "text",
+          "settings": {}
+        },
+        "feature-grid-item-1": {
+          "type": "feature",
+          "settings": {}
+        },
+        "feature-grid-item-2": {
+          "type": "feature",
+          "settings": {}
+        },
+        "feature-grid-item-3": {
+          "type": "feature",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "feature-grid-kicker",
+        "feature-grid-heading",
+        "feature-grid-text",
+        "feature-grid-item-1",
+        "feature-grid-item-2",
+        "feature-grid-item-3"
+      ],
+      "settings": {
+        "variant": "columns_3",
+        "align": "left",
+        "bg": "bg-white",
+        "text": "text-neutral-900"
+      }
+    },
+    "collection-grid": {
+      "type": "cc-collection-grid",
+      "blocks": {
+        "collection-grid-1": {
+          "type": "collection",
+          "settings": {}
+        },
+        "collection-grid-2": {
+          "type": "collection",
+          "settings": {}
+        },
+        "collection-grid-3": {
+          "type": "collection",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "collection-grid-1",
+        "collection-grid-2",
+        "collection-grid-3"
+      ],
+      "settings": {}
+    },
+    "testimonials": {
+      "type": "cc-testimonials",
+      "blocks": {
+        "testimonials-heading": {
+          "type": "heading",
+          "settings": {}
+        },
+        "testimonial-1": {
+          "type": "testimonial",
+          "settings": {}
+        },
+        "testimonial-2": {
+          "type": "testimonial",
+          "settings": {}
+        },
+        "testimonial-3": {
+          "type": "testimonial",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "testimonials-heading",
+        "testimonial-1",
+        "testimonial-2",
+        "testimonial-3"
+      ],
+      "settings": {
+        "variant": "cards",
+        "align": "left",
+        "bg": "bg-white",
+        "text": "text-neutral-900"
+      }
+    },
+    "faq": {
+      "type": "cc-faq",
+      "blocks": {
+        "faq-heading": {
+          "type": "heading",
+          "settings": {}
+        },
+        "faq-1": {
+          "type": "faq",
+          "settings": {}
+        },
+        "faq-2": {
+          "type": "faq",
+          "settings": {}
+        },
+        "faq-3": {
+          "type": "faq",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "faq-heading",
+        "faq-1",
+        "faq-2",
+        "faq-3"
+      ],
+      "settings": {
+        "variant": "accordion",
+        "align": "left",
+        "bg": "bg-white",
+        "text": "text-neutral-900"
+      }
+    },
+    "cta": {
+      "type": "cc-cta",
+      "blocks": {
+        "cta-kicker": {
+          "type": "kicker",
+          "settings": {}
+        },
+        "cta-heading": {
+          "type": "heading",
+          "settings": {}
+        },
+        "cta-text": {
+          "type": "text",
+          "settings": {}
+        },
+        "cta-buttons": {
+          "type": "buttons",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "cta-kicker",
+        "cta-heading",
+        "cta-text",
+        "cta-buttons"
+      ],
+      "settings": {
+        "variant": "center",
+        "align": "center",
+        "bg": "bg-neutral-50",
+        "text": "text-neutral-900"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "feature-grid",
+    "collection-grid",
+    "testimonials",
+    "faq",
+    "cta"
+  ]
+}
