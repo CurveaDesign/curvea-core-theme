@@ -1,4 +1,7 @@
-<footer class="{{ section.settings.bg_class }} {{ section.settings.text_class }} {{ section.settings.py }}">
+<footer
+  {{ section.shopify_attributes }}
+  class="{{ section.settings.bg_class }} {{ section.settings.text_class }} {{ section.settings.py }}"
+>
   <div class="{{ section.settings.container }} space-y-10">
     <div class="grid gap-8 md:grid-cols-3">
       {% for block in section.blocks %}
@@ -6,41 +9,80 @@
           {% when 'link_column' %}
             <div {{ block.shopify_attributes }}>
               {% if block.settings.heading != blank %}
-                {% render 'cc-heading', tag: 'h3', text: block.settings.heading, classes: 'text-sm font-semibold uppercase tracking-wide' %}
+                {% render 'cc-heading',
+                  tag: 'h3',
+                  text: block.settings.heading,
+                  classes: 'text-sm font-semibold uppercase tracking-wide'
+                %}
               {% endif %}
               {% if block.settings.menu != blank %}
-                <ul class="mt-4 space-y-2 text-sm">
+                <ul class="mt-4 space-y-2 text-sm" aria-label="Footer links">
                   {% for link in linklists[block.settings.menu].links %}
                     <li>
-                      <a href="{{ link.url }}" class="transition-opacity hover:opacity-75">{{ link.title }}</a>
+                      <a
+                        href="{{ link.url }}"
+                        class="transition-opacity hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/40"
+                      >
+                        {{ link.title }}
+                      </a>
                     </li>
                   {% endfor %}
                 </ul>
               {% endif %}
             </div>
+
           {% when 'text' %}
             <div {{ block.shopify_attributes }}>
-              <div class="prose prose-sm max-w-none text-inherit">
+              <div class="rte text-sm opacity-85">
                 {{ block.settings.content }}
               </div>
             </div>
+
           {% when 'social' %}
             <div {{ block.shopify_attributes }}>
               {% if block.settings.heading != blank %}
-                {% render 'cc-heading', tag: 'h3', text: block.settings.heading, classes: 'text-sm font-semibold uppercase tracking-wide' %}
+                {% render 'cc-heading',
+                  tag: 'h3',
+                  text: block.settings.heading,
+                  classes: 'text-sm font-semibold uppercase tracking-wide'
+                %}
               {% endif %}
-              <ul class="mt-4 space-y-2 text-sm">
+              <ul class="mt-4 space-y-2 text-sm" aria-label="Social links">
                 {% if block.settings.show_facebook and settings.social_facebook_link != blank %}
-                  <li><a href="{{ settings.social_facebook_link }}" class="transition-opacity hover:opacity-75">Facebook</a></li>
+                  <li>
+                    <a
+                      href="{{ settings.social_facebook_link }}"
+                      class="transition-opacity hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/40"
+                      >Facebook</a
+                    >
+                  </li>
                 {% endif %}
                 {% if block.settings.show_instagram and settings.social_instagram_link != blank %}
-                  <li><a href="{{ settings.social_instagram_link }}" class="transition-opacity hover:opacity-75">Instagram</a></li>
+                  <li>
+                    <a
+                      href="{{ settings.social_instagram_link }}"
+                      class="transition-opacity hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/40"
+                      >Instagram</a
+                    >
+                  </li>
                 {% endif %}
                 {% if block.settings.show_x and settings.social_twitter_link != blank %}
-                  <li><a href="{{ settings.social_twitter_link }}" class="transition-opacity hover:opacity-75">X</a></li>
+                  <li>
+                    <a
+                      href="{{ settings.social_twitter_link }}"
+                      class="transition-opacity hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/40"
+                      >X</a
+                    >
+                  </li>
                 {% endif %}
                 {% if block.settings.show_tiktok and settings.social_tiktok_link != blank %}
-                  <li><a href="{{ settings.social_tiktok_link }}" class="transition-opacity hover:opacity-75">TikTok</a></li>
+                  <li>
+                    <a
+                      href="{{ settings.social_tiktok_link }}"
+                      class="transition-opacity hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/40"
+                      >TikTok</a
+                    >
+                  </li>
                 {% endif %}
               </ul>
             </div>
@@ -49,7 +91,10 @@
     </div>
 
     <div class="border-t border-current/10 pt-6 text-xs">
-      <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</p>
+      <p>
+        &copy; {{ 'now' | date: '%Y' }}
+        {{ shop.name }}. All rights reserved.
+      </p>
     </div>
   </div>
 </footer>
@@ -64,14 +109,8 @@
       "label": "Container width",
       "default": "cc-container",
       "options": [
-        {
-          "value": "cc-container",
-          "label": "CC Container"
-        },
-        {
-          "value": "w-full px-4",
-          "label": "Full width"
-        }
+        { "value": "cc-container", "label": "CC Container" },
+        { "value": "w-full px-4", "label": "Full width" }
       ]
     },
     {
@@ -98,17 +137,8 @@
       "type": "link_column",
       "name": "Link column",
       "settings": [
-        {
-          "type": "text",
-          "id": "heading",
-          "label": "Heading",
-          "default": "Shop"
-        },
-        {
-          "type": "link_list",
-          "id": "menu",
-          "label": "Menu"
-        }
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Shop" },
+        { "type": "link_list", "id": "menu", "label": "Menu" }
       ]
     },
     {
@@ -127,75 +157,24 @@
       "type": "social",
       "name": "Social links",
       "settings": [
-        {
-          "type": "text",
-          "id": "heading",
-          "label": "Heading",
-          "default": "Follow"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_facebook",
-          "label": "Show Facebook",
-          "default": true
-        },
-        {
-          "type": "checkbox",
-          "id": "show_instagram",
-          "label": "Show Instagram",
-          "default": true
-        },
-        {
-          "type": "checkbox",
-          "id": "show_x",
-          "label": "Show X (Twitter)",
-          "default": true
-        },
-        {
-          "type": "checkbox",
-          "id": "show_tiktok",
-          "label": "Show TikTok",
-          "default": true
-        }
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Follow" },
+        { "type": "checkbox", "id": "show_facebook", "label": "Show Facebook", "default": true },
+        { "type": "checkbox", "id": "show_instagram", "label": "Show Instagram", "default": true },
+        { "type": "checkbox", "id": "show_x", "label": "Show X (Twitter)", "default": true },
+        { "type": "checkbox", "id": "show_tiktok", "label": "Show TikTok", "default": true }
       ]
     }
   ],
   "presets": [
     {
       "name": "CC Footer Shell - Light",
-      "settings": {
-        "bg_class": "bg-white",
-        "text_class": "text-neutral-900"
-      },
-      "blocks": [
-        {
-          "type": "link_column"
-        },
-        {
-          "type": "text"
-        },
-        {
-          "type": "social"
-        }
-      ]
+      "settings": { "bg_class": "bg-white", "text_class": "text-neutral-900" },
+      "blocks": [{ "type": "link_column" }, { "type": "text" }, { "type": "social" }]
     },
     {
       "name": "CC Footer Shell - Dark",
-      "settings": {
-        "bg_class": "bg-neutral-900",
-        "text_class": "text-white"
-      },
-      "blocks": [
-        {
-          "type": "link_column"
-        },
-        {
-          "type": "text"
-        },
-        {
-          "type": "social"
-        }
-      ]
+      "settings": { "bg_class": "bg-neutral-900", "text_class": "text-white" },
+      "blocks": [{ "type": "link_column" }, { "type": "text" }, { "type": "social" }]
     }
   ]
 }
