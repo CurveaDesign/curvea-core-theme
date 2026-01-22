@@ -31,7 +31,12 @@
 -%}
 
 {%- if text_value != blank -%}
-  <{{ tag }}{% if shopify_attributes != blank %} {{ shopify_attributes }}{% endif %} class="{{ base_class }} {{ align_class }} {{ classes }}">
-    {{ text_value }}
+  <{{ tag }}
+    {% if shopify_attributes != blank %}
+      {{ shopify_attributes -}}
+    {% endif %}
+    class="{{ base_class }} {{ align_class }} {{ classes }}"
+  >
+    {{ text_value | escape }}
   </{{ tag }}>
 {%- endif -%}
