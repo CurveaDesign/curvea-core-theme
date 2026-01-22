@@ -53,7 +53,9 @@
                     >
                       {%- for discount in cart.cart_level_discount_applications -%}
                         <li class="discounts__discount discounts__discount--position">
-                          {{- 'icon-discount.svg' | inline_asset_content -}}
+                          <span class="discounts__icon" aria-hidden="true">
+                            {{- 'icon-discount.svg' | inline_asset_content -}}
+                          </span>
                           {{ discount.title | escape }}
                           (-{{ discount.total_allocated_amount | money }})
                         </li>
