@@ -1,6 +1,4 @@
 {%- liquid
-  assign label = label
-  assign href = href
   assign variant = variant | default: 'primary'
   assign classes = classes | default: ''
 
@@ -18,7 +16,7 @@
 -%}
 
 {%- if label != blank and href != blank -%}
-  <a href="{{ href }}" class="{{ base_class }} {{ variant_class }} {{ classes }}">
-    {{ label }}
+  <a href="{{ href | escape }}" class="{{ base_class }} {{ variant_class }} {{ classes }}">
+    {{ label | escape }}
   </a>
 {%- endif -%}
