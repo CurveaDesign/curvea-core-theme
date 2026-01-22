@@ -11,6 +11,7 @@
 {%- unless product.has_only_default_variant -%}
   <variant-selects
     id="variant-selects-{{ section.id }}"
+    class="variant-picker"
     data-section="{{ section.id }}"
     {{ block.shopify_attributes }}
   >
@@ -28,10 +29,10 @@
         endif
       -%}
       {%- if picker_type == 'swatch' -%}
-        <fieldset class="js product-form__input product-form__input--swatch">
-          <legend class="form__label">
+        <fieldset class="js product-form__input product-form__input--swatch variant-picker__option">
+          <legend class="form__label variant-picker__label">
             {{ option.name }}:
-            <span data-selected-value>
+            <span data-selected-value class="variant-picker__value">
               {{- option.selected_value -}}
             </span>
           </legend>
@@ -43,8 +44,13 @@
           %}
         </fieldset>
       {%- elsif picker_type == 'button' -%}
-        <fieldset class="js product-form__input product-form__input--pill">
-          <legend class="form__label">{{ option.name }}</legend>
+        <fieldset class="js product-form__input product-form__input--pill variant-picker__option">
+          <legend class="form__label variant-picker__label">
+            {{ option.name }}:
+            <span data-selected-value class="variant-picker__value">
+              {{- option.selected_value -}}
+            </span>
+          </legend>
           {% render 'product-variant-options',
             product: product,
             option: option,
@@ -53,11 +59,14 @@
           %}
         </fieldset>
       {%- else -%}
-        <div class="product-form__input product-form__input--dropdown">
-          <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
-            {{ option.name }}
+        <div class="product-form__input product-form__input--dropdown variant-picker__option">
+          <label class="form__label variant-picker__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
+            {{ option.name }}:
+            <span data-selected-value class="variant-picker__value">
+              {{- option.selected_value -}}
+            </span>
           </label>
-          <div class="select">
+          <div class="select variant-picker__select">
             {%- if picker_type == 'swatch_dropdown' -%}
               <span
                 data-selected-value
