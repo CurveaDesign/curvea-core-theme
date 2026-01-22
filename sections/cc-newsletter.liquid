@@ -7,14 +7,11 @@
   assign gap = section.settings.gap
 
   assign align_class = 'text-left'
-  assign items_class = 'items-start'
   case align
     when 'center'
       assign align_class = 'text-center'
-      assign items_class = 'items-center'
     when 'right'
       assign align_class = 'text-right'
-      assign items_class = 'items-end'
   endcase
 
   assign py_class = 'py-10 sm:py-14'
