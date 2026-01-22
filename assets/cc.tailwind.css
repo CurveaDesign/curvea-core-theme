@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --cc-bg: #ffffff;
@@ -33,7 +33,8 @@
 
   --cc-container-pad-x: 1.5rem;
 
-  --cc-font-sans: "Inter", "SF Pro Text", "SF Pro Display", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --cc-font-body: var(--font-body-family);
+  --cc-font-heading: var(--font-heading-family);
   --cc-text-xs: 0.75rem;
   --cc-text-sm: 0.875rem;
   --cc-text-base: 1rem;
@@ -41,30 +42,70 @@
   --cc-text-xl: 1.25rem;
   --cc-text-2xl: 1.5rem;
   --cc-text-3xl: 1.875rem;
+
+  --cc-h1: 2.25rem;
+  --cc-h2: 1.875rem;
+  --cc-h3: 1.5rem;
+  --cc-h4: 1.25rem;
 }
 
 @layer base {
-  body {
-    font-family: var(--cc-font-sans);
+  /* Curvea Core typography scope: only affects Curvea sections/components */
+  .cc-root {
+    font-family: var(--cc-font-body);
+    font-style: var(--font-body-style);
+    font-weight: var(--font-body-weight);
     line-height: 1.6;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  .cc-root h1,
+  .cc-root h2,
+  .cc-root h3,
+  .cc-root h4,
+  .cc-root h5,
+  .cc-root h6 {
+    font-family: var(--cc-font-heading);
+    font-style: var(--font-heading-style);
+    font-weight: var(--font-heading-weight);
     color: inherit;
     letter-spacing: -0.01em;
   }
 
-  a {
+  /* Heading sizes: use neutral base values multiplied by Dawn scale */
+  .cc-root h1 {
+    font-size: calc(var(--cc-h1) * var(--font-heading-scale));
+    line-height: 1.15;
+  }
+  .cc-root h2 {
+    font-size: calc(var(--cc-h2) * var(--font-heading-scale));
+    line-height: 1.2;
+  }
+  .cc-root h3 {
+    font-size: calc(var(--cc-h3) * var(--font-heading-scale));
+    line-height: 1.25;
+  }
+  .cc-root h4 {
+    font-size: calc(var(--cc-h4) * var(--font-heading-scale));
+    line-height: 1.3;
+  }
+
+  /* Text sizes: multiplied by Dawn body scale */
+  .cc-root {
+    font-size: calc(var(--cc-text-base) * var(--font-body-scale));
+  }
+  .cc-root .cc-text-sm {
+    font-size: calc(var(--cc-text-sm) * var(--font-body-scale));
+  }
+  .cc-root .cc-text-lg {
+    font-size: calc(var(--cc-text-lg) * var(--font-body-scale));
+  }
+
+  .cc-root a {
     color: inherit;
     text-decoration: none;
   }
 
-  a:hover {
+  .cc-root a:hover {
     text-decoration: underline;
   }
 }
@@ -90,7 +131,10 @@
     padding: var(--cc-space-3) var(--cc-space-5);
     font-size: var(--cc-text-sm);
     font-weight: 600;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
   }
 
   .cc-btn--primary {
