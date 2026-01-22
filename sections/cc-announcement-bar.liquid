@@ -1,17 +1,21 @@
-{% if section.settings.enabled and section.settings.text != blank %}
-  {% assign content = section.settings.text | escape %}
-  <div class="{{ section.settings.bg_class }} {{ section.settings.text_class }} {{ section.settings.py }}">
+{%- if section.settings.enabled and section.settings.text != blank -%}
+  {%- assign content = section.settings.text | escape -%}
+
+  <div {{ section.shopify_attributes }} class="{{ section.settings.bg_class }} {{ section.settings.text_class }} {{ section.settings.py }}">
     <div class="w-full text-center text-sm">
-      {% if section.settings.link != blank %}
-        <a href="{{ section.settings.link }}" class="underline underline-offset-4">
+      {%- if section.settings.link != blank -%}
+        <a
+          href="{{ section.settings.link }}"
+          class="underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+        >
           {{ content }}
         </a>
-      {% else %}
+      {%- else -%}
         {{ content }}
-      {% endif %}
+      {%- endif -%}
     </div>
   </div>
-{% endif %}
+{%- endif -%}
 
 {% schema %}
 {
