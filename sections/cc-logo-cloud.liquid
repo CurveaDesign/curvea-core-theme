@@ -43,11 +43,24 @@
     <div class="mt-8 {{ grid_class }} {{ gap }} items-center">
       {%- for block in section.blocks -%}
         {%- if block.type == 'logo' -%}
+          {%- liquid
+            assign label = ''
+            if block.settings.image != blank and block.settings.image.alt != blank
+              assign label = block.settings.image.alt | escape
+            endif
+          -%}
+
           {%- capture logo_media -%}
             {% render 'cc-media', image: block.settings.image, aspect: 'auto', classes: 'flex items-center justify-center rounded-xl border border-current/10 p-4', img_class: 'h-10 w-auto' %}
           {%- endcapture -%}
+
           {%- if block.settings.link != blank -%}
-            <a {{ block.shopify_attributes }} class="block" href="{{ block.settings.link }}">
+            <a
+              {{ block.shopify_attributes }}
+              class="block"
+              href="{{ block.settings.link }}"
+              {%- if label != blank -%} aria-label="{{ label }}"{%- endif -%}
+            >
               {{ logo_media }}
             </a>
           {%- else -%}
@@ -193,13 +206,7 @@
     {
       "name": "CC Logo Cloud — Dark",
       "settings": { "variant": "grid", "align": "center", "bg": "bg-neutral-950", "text": "text-white" },
-      "blocks": [
-        { "type": "heading" },
-        { "type": "logo" },
-        { "type": "logo" },
-        { "type": "logo" },
-        { "type": "logo" }
-      ]
+      "blocks": [{ "type": "heading" }, { "type": "logo" }, { "type": "logo" }, { "type": "logo" }, { "type": "logo" }]
     }
   ]
 }
