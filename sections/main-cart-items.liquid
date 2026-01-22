@@ -384,8 +384,8 @@
                                     <li>
                                       <span>
                                         {{- price_break.minimum_quantity -}}
-                                        <span aria-hidden="true">+</span></span
-                                      >
+                                        <span aria-hidden="true">+</span>
+                                      </span>
                                       {%- assign price = price_break.price | money_with_currency -%}
                                       <span> {{ 'sections.quick_order_list.each' | t: money: price }}</span>
                                     </li>
