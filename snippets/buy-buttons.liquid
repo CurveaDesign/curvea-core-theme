@@ -1,22 +1,3 @@
-{% comment %}
-  Renders product buy-buttons.
-
-  Accepts:
-  - product: {Object} product object.
-  - block: {Object} block object.
-  - product_form_id: {String} form id.
-  - section_id: {String} section id.
-  - show_pickup_availability: {Boolean} render pickup availability.
-
-  Usage example (pseudo):
-  render 'buy-buttons' with:
-    block: block
-    product: product
-    product_form_id: product_form_id
-    section_id: section.id
-    show_pickup_availability: true
-{% endcomment %}
-
 <div {{ block.shopify_attributes }}>
   {%- if product != blank -%}
     {%- liquid
@@ -32,10 +13,8 @@
 
       # CC: Per-product ATC disable (metafield)
       assign cc_product_disable_atc = false
-      if product.metafields.custom.disable_atc != blank
-        if product.metafields.custom.disable_atc.value == true
-          assign cc_product_disable_atc = true
-        endif
+      if product.metafields.custom.disable_atc != blank and product.metafields.custom.disable_atc.value == true
+        assign cc_product_disable_atc = true
       endif
 
       # CC: Global OR product-level disable
@@ -82,11 +61,7 @@
         >
 
         {%- if gift_card_recipient_feature_active -%}
-          {%- render 'gift-card-recipient-form',
-            product: product,
-            form: form,
-            section: section
-          -%}
+          {%- render 'gift-card-recipient-form', product: product, form: form, section: section -%}
         {%- endif -%}
 
         <div class="product-form__buttons">
@@ -100,9 +75,8 @@
             endif
 
             assign quantity_rule_soldout = false
-            if check_against_inventory
-              if product.selected_or_first_available_variant.quantity_rule.min
-                > product.selected_or_first_available_variant.inventory_quantity
+            if check_against_inventory and product.selected_or_first_available_variant.quantity_rule.min
+              if product.selected_or_first_available_variant.quantity_rule.min > product.selected_or_first_available_variant.inventory_quantity
                 assign quantity_rule_soldout = true
               endif
             endif
@@ -177,16 +151,13 @@
   {%- if show_pickup_availability -%}
     {{ 'component-pickup-availability.css' | asset_url | stylesheet_tag }}
 
-    {%- assign pick_up_availabilities =
-      product.selected_or_first_available_variant.store_availabilities
+    {%- assign pick_up_availabilities = product.selected_or_first_available_variant.store_availabilities
       | where: 'pick_up_enabled', true
     -%}
 
     <pickup-availability
       class="product__pickup-availabilities quick-add-hidden"
-      {% if product.selected_or_first_available_variant.available
-        and pick_up_availabilities.size > 0
-      %}
+      {% if product.selected_or_first_available_variant.available and pick_up_availabilities.size > 0 %}
         available
       {% endif %}
       data-root-url="{{ routes.root_url }}"
