@@ -53,10 +53,16 @@
   endcase
 -%}
 
-<section class="cc-section {{ py_class }} {{ bg_class }} {{ text_class }}">
+<section {{ section.shopify_attributes }} class="cc-section {{ py_class }} {{ bg_class }} {{ text_class }}">
   {%- capture header_content -%}
-    {%- render 'cc-heading', tag: 'h2', text: section.settings.heading, align: align -%}
-    {%- render 'cc-heading', tag: 'p', text: section.settings.subheading, align: align, classes: 'text-base text-current/70' -%}
+    {%- if section.settings.heading != blank -%}
+      {%- render 'cc-heading', tag: 'h2', text: section.settings.heading, align: align -%}
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      {%- render 'cc-heading', tag: 'p', text: section.settings.subheading, align: align, classes: 'text-base text-current/70' -%}
+    {%- endif -%}
+
     {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
       {%- render 'cc-button', label: section.settings.button_label, href: section.settings.button_link, variant: section.settings.button_variant -%}
     {%- endif -%}
@@ -65,18 +71,22 @@
   {%- capture gallery_content -%}
     <div class="grid {{ grid_class }} {{ gap_class }}">
       {%- for block in section.blocks -%}
-        <div class="flex flex-col gap-3" {{ block.shopify_attributes }}>
-          {%- render 'cc-media', image: block.settings.image, aspect: section.settings.aspect, classes: 'cc-card overflow-hidden' -%}
-          {%- if block.settings.caption != blank -%}
-            <div class="text-sm text-current/70">{{ block.settings.caption }}</div>
-          {%- endif -%}
-        </div>
+        {%- if block.type == 'image' -%}
+          <div class="flex flex-col gap-3" {{ block.shopify_attributes }}>
+            {%- render 'cc-media', image: block.settings.image, aspect: section.settings.aspect, classes: 'cc-card overflow-hidden' -%}
+            {%- if block.settings.caption != blank -%}
+              <div class="text-sm text-current/70">{{ block.settings.caption | escape }}</div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
       {%- endfor -%}
     </div>
   {%- endcapture -%}
 
   {%- capture section_content -%}
-    {%- render 'cc-stack', gap: gap_class, classes: align_class, content: header_content -%}
+    {%- if header_content != blank -%}
+      {%- render 'cc-stack', gap: gap_class, classes: align_class, content: header_content -%}
+    {%- endif -%}
     {{ gallery_content }}
   {%- endcapture -%}
 
@@ -234,35 +244,19 @@
   "presets": [
     {
       "name": "Classic",
-      "blocks": [
-        { "type": "image" },
-        { "type": "image" },
-        { "type": "image" }
-      ]
+      "blocks": [{ "type": "image" }, { "type": "image" }, { "type": "image" }]
     },
     {
       "name": "Split",
-      "blocks": [
-        { "type": "image" },
-        { "type": "image" },
-        { "type": "image" },
-        { "type": "image" }
-      ]
+      "blocks": [{ "type": "image" }, { "type": "image" }, { "type": "image" }, { "type": "image" }]
     },
     {
       "name": "Minimal",
-      "blocks": [
-        { "type": "image" },
-        { "type": "image" }
-      ]
+      "blocks": [{ "type": "image" }, { "type": "image" }]
     },
     {
       "name": "Editorial",
-      "blocks": [
-        { "type": "image" },
-        { "type": "image" },
-        { "type": "image" }
-      ]
+      "blocks": [{ "type": "image" }, { "type": "image" }, { "type": "image" }]
     }
   ]
 }
