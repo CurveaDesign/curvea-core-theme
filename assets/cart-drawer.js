@@ -1,9 +1,20 @@
+/* Curvea Core — Dawn-compatible cart-drawer behavior
+   Phase 6: Minimal hardening only (no new UX patterns).
+*/
+
 class CartDrawer extends HTMLElement {
+  static get observedAttributes() {
+    return ['open'];
+  }
+
   constructor() {
     super();
 
     this.addEventListener('keyup', (evt) => evt.code === 'Escape' && this.close());
-    this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
+
+    const overlay = this.querySelector('#CartDrawer-Overlay');
+    overlay?.addEventListener('click', this.close.bind(this));
+
     this.setHeaderCartIconAccessibility();
   }
 
@@ -18,7 +29,8 @@ class CartDrawer extends HTMLElement {
       this.open(cartLink);
     });
     cartLink.addEventListener('keydown', (event) => {
-      if (event.code.toUpperCase() === 'SPACE') {
+      const code = event.code?.toUpperCase();
+      if (code === 'SPACE' || code === 'ENTER') {
         event.preventDefault();
         this.open(cartLink);
       }
@@ -26,6 +38,7 @@ class CartDrawer extends HTMLElement {
   }
 
   open(triggeredBy) {
+    this.setAttribute('open', '');
     if (triggeredBy) this.setActiveElement(triggeredBy);
     const cartDrawerNote = this.querySelector('[id^="Details-"] summary');
     if (cartDrawerNote && !cartDrawerNote.hasAttribute('role')) this.setSummaryAccessibility(cartDrawerNote);
@@ -43,16 +56,24 @@ class CartDrawer extends HTMLElement {
         const focusElement = this.querySelector('.drawer__inner') || this.querySelector('.drawer__close');
         trapFocus(containerToTrapFocusOn, focusElement);
       },
-      { once: true }
+      { once: true },
     );
 
     document.body.classList.add('overflow-hidden');
+
+    // Keep the trigger in sync for AT/keyboard users.
+    const cartLink = document.querySelector('#cart-icon-bubble');
+    cartLink?.setAttribute('aria-expanded', 'true');
   }
 
   close() {
+    this.removeAttribute('open');
     this.classList.remove('active');
     removeTrapFocus(this.activeElement);
     document.body.classList.remove('overflow-hidden');
+
+    const cartLink = document.querySelector('#cart-icon-bubble');
+    cartLink?.setAttribute('aria-expanded', 'false');
   }
 
   setSummaryAccessibility(cartDrawerNote) {
@@ -84,7 +105,8 @@ class CartDrawer extends HTMLElement {
     });
 
     setTimeout(() => {
-      this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
+      const overlay = this.querySelector('#CartDrawer-Overlay');
+      overlay?.addEventListener('click', this.close.bind(this));
       this.open();
     });
   }
@@ -114,23 +136,27 @@ class CartDrawer extends HTMLElement {
   }
 }
 
-customElements.define('cart-drawer', CartDrawer);
-
-class CartDrawerItems extends CartItems {
-  getSectionsToRender() {
-    return [
-      {
-        id: 'CartDrawer',
-        section: 'cart-drawer',
-        selector: '.drawer__inner',
-      },
-      {
-        id: 'cart-icon-bubble',
-        section: 'cart-icon-bubble',
-        selector: '.shopify-section',
-      },
-    ];
-  }
+if (!customElements.get('cart-drawer')) {
+  customElements.define('cart-drawer', CartDrawer);
 }
 
-customElements.define('cart-drawer-items', CartDrawerItems);
+if (typeof CartItems !== 'undefined' && !customElements.get('cart-drawer-items')) {
+  class CartDrawerItems extends CartItems {
+    getSectionsToRender() {
+      return [
+        {
+          id: 'CartDrawer',
+          section: 'cart-drawer',
+          selector: '.drawer__inner',
+        },
+        {
+          id: 'cart-icon-bubble',
+          section: 'cart-icon-bubble',
+          selector: '.shopify-section',
+        },
+      ];
+    }
+  }
+
+  customElements.define('cart-drawer-items', CartDrawerItems);
+}
