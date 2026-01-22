@@ -63,7 +63,7 @@
           onclick="this.closest('cart-drawer').close()"
           aria-label="{{ 'accessibility.close' | t }}"
         >
-          <span class="svg-wrapper">
+          <span class="svg-wrapper" aria-hidden="true">
             {{- 'icon-close.svg' | inline_asset_content -}}
           </span>
         </button>
@@ -224,7 +224,9 @@
                           >
                             {%- for discount in item.line_level_discount_allocations -%}
                               <li class="discounts__discount">
-                                {{- 'icon-discount.svg' | inline_asset_content -}}
+                                <span class="discounts__icon" aria-hidden="true">
+                                  {{- 'icon-discount.svg' | inline_asset_content -}}
+                                </span>
                                 {{ discount.discount_application.title }}
                               </li>
                             {%- endfor -%}
@@ -232,7 +234,9 @@
                         </td>
 
                         <td class="cart-item__totals right" role="cell" headers="CartDrawer-ColumnTotal">
-                          {%- render 'loading-spinner' -%}
+                          <span class="cart-loading" aria-hidden="true">
+                            {%- render 'loading-spinner' -%}
+                          </span>
                           <div class="cart-item__price-wrapper">
                             {%- if item.original_line_price != item.final_line_price -%}
                               <div class="cart-item__discounted-prices">
@@ -478,7 +482,7 @@
             <summary>
               <span class="summary__title">
                 {{ 'sections.cart.note' | t }}
-                {{- 'icon-caret.svg' | inline_asset_content -}}
+                <span class="svg-wrapper" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
               </span>
             </summary>
             <cart-note class="cart__note field">
@@ -496,13 +500,15 @@
         <!-- Start blocks -->
         <!-- Subtotals -->
 
-        <div class="cart-drawer__footer" {{ block.shopify_attributes }}>
+        <div class="cart-drawer__footer">
           <div>
             {%- if cart.cart_level_discount_applications.size > 0 -%}
               <ul class="discounts list-unstyled" role="list" aria-label="{{ 'customer.order.discount' | t }}">
                 {%- for discount in cart.cart_level_discount_applications -%}
                   <li class="discounts__discount discounts__discount--end">
-                    {{- 'icon-discount.svg' | inline_asset_content -}}
+                    <span class="discounts__icon" aria-hidden="true">
+                      {{- 'icon-discount.svg' | inline_asset_content -}}
+                    </span>
                     {{ discount.title | escape }}
                     (-{{ discount.total_allocated_amount | money }})
                   </li>
@@ -559,7 +565,7 @@
 
         <!-- CTAs -->
 
-        <div class="cart__ctas" {{ block.shopify_attributes }}>
+        <div class="cart__ctas">
           <button
             type="submit"
             id="CartDrawer-Checkout"
