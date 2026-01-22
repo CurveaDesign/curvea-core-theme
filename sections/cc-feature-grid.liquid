@@ -23,16 +23,20 @@
 
   assign text_align = ''
   assign item_align = ''
+  assign prose_align = ''
   case align
     when 'center'
       assign text_align = 'text-center items-center'
       assign item_align = 'text-center items-center'
+      assign prose_align = 'mx-auto'
     when 'right'
       assign text_align = 'text-right items-end'
       assign item_align = 'text-right items-end'
+      assign prose_align = 'ml-auto'
     else
       assign text_align = 'text-left items-start'
       assign item_align = 'text-left items-start'
+      assign prose_align = ''
   endcase
 -%}
 
@@ -46,7 +50,7 @@
           {%- when 'heading' -%}
             {% render 'cc-heading', tag: 'h2', text: block.settings.text, classes: 'mt-3', align: align, shopify_attributes: block.shopify_attributes %}
           {%- when 'text' -%}
-            <div {{ block.shopify_attributes }} class="mt-4 max-w-prose text-base sm:text-lg opacity-90">
+            <div {{ block.shopify_attributes }} class="mt-4 max-w-prose text-base sm:text-lg opacity-90 rte {{ prose_align }}">
               {{ block.settings.text }}
             </div>
         {%- endcase -%}
@@ -59,7 +63,7 @@
           <div {{ block.shopify_attributes }} class="flex flex-col gap-3 rounded-2xl border border-current/10 p-6 {{ item_align }}">
             {% render 'cc-media', image: block.settings.icon, aspect: '1/1', classes: 'h-10 w-10', img_class: 'h-full w-full object-contain' %}
             {% render 'cc-heading', tag: 'h3', text: block.settings.heading, classes: 'text-lg font-semibold', align: align %}
-            <div class="text-sm opacity-80">
+            <div class="text-sm opacity-80 rte">
               {{ block.settings.text }}
             </div>
           </div>
@@ -167,9 +171,7 @@
       "type": "heading",
       "name": "Heading",
       "limit": 1,
-      "settings": [
-        { "type": "text", "id": "text", "label": "Heading", "default": "Feature highlights" }
-      ]
+      "settings": [{ "type": "text", "id": "text", "label": "Heading", "default": "Feature highlights" }]
     },
     {
       "type": "text",
