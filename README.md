@@ -1,99 +1,259 @@
-# Dawn
+# Curvea Core — Shopify Theme Framework
 
-[![Build status](https://github.com/shopify/dawn/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Shopify/dawn/actions/workflows/ci.yml?query=branch%3Amain)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?color=informational)](/.github/CONTRIBUTING.md)
+Curvea Core is a **modular, editor-first Shopify theme framework** built on top of Dawn.
 
-[Getting started](#getting-started) |
-[Staying up to date with Dawn changes](#staying-up-to-date-with-dawn-changes) |
-[Developer tools](#developer-tools) |
-[Contributing](#contributing) |
-[Code of conduct](#code-of-conduct) |
-[Theme Store submission](#theme-store-submission) |
-[License](#license)
+It is designed to be:
+- reusable across multiple client stores
+- non-destructive to Shopify defaults
+- fast, structured, and scalable
+- **design-agnostic at the core level**
 
-Dawn represents a HTML-first, JavaScript-only-as-needed approach to theme development. It's Shopify's first source available theme with performance, flexibility, and [Online Store 2.0 features](https://www.shopify.com/partners/blog/shopify-online-store) built-in and acts as a reference for building Shopify themes.
+Curvea Core is **not a one-off theme**.  
+It is a **system** intended to be extended, branded, and polished later.
 
-* **Web-native in its purest form:** Themes run on the [evergreen web](https://www.w3.org/2001/tag/doc/evergreen-web/). We leverage the latest web browsers to their fullest, while maintaining support for the older ones through progressive enhancement—not polyfills.
-* **Lean, fast, and reliable:** Functionality and design defaults to “no” until it meets this requirement. Code ships on quality. Themes must be built with purpose. They shouldn’t support each and every feature in Shopify.
-* **Server-rendered:** HTML must be rendered by Shopify servers using Liquid. Business logic and platform primitives such as translations and money formatting don’t belong on the client. Async and on-demand rendering of parts of the page is OK, but we do it sparingly as a progressive enhancement.
-* **Functional, not pixel-perfect:** The Web doesn’t require each page to be rendered pixel-perfect by each browser engine. Using semantic markup, progressive enhancement, and clever design, we ensure that themes remain functional regardless of the browser.
+---
 
-You can find a more detailed version of our theme code principles in the [contribution guide](https://github.com/Shopify/dawn/blob/main/.github/CONTRIBUTING.md#theme-code-principles).
+## What Curvea Core Is (and Is Not)
 
-## Getting started
-We recommend using Dawn as a starting point for theme development. [Learn more on Shopify.dev](https://shopify.dev/themes/getting-started/create).
+### ✅ Curvea Core **IS**
+- a structural framework
+- editor-first by design
+- safe to update and maintain
+- suitable for client work at scale
+- intentionally minimal in visuals
 
-> If you're building a theme for the Shopify Theme Store, then you can use Dawn as a starting point. However, the theme that you submit needs to be [substantively different from Dawn](https://shopify.dev/themes/store/requirements#uniqueness) so that it provides added value for merchants. Learn about the [ways that you can use Dawn](https://shopify.dev/themes/tools/dawn#ways-to-use-dawn).
+### ❌ Curvea Core **IS NOT**
+- a finished branded theme
+- a design system (yet)
+- a marketing showcase
+- a replacement for Dawn internals
 
-Please note that the main branch may include code for features not yet released. The "stable" version of Dawn is available in the theme store.
+Design is a **separate layer** added later.
 
-## Staying up to date with Dawn changes
+---
 
-Say you're building a new theme off Dawn but you still want to be able to pull in the latest changes, you can add a remote `upstream` pointing to this Dawn repository.
+## Foundation
 
-1. Navigate to your local theme folder.
-2. Verify the list of remotes and validate that you have both an `origin` and `upstream`:
-```sh
-git remote -v
-```
-3. If you don't see an `upstream`, you can add one that points to Shopify's Dawn repository:
-```sh
-git remote add upstream https://github.com/Shopify/dawn.git
-```
-4. Pull in the latest Dawn changes into your repository:
-```sh
-git fetch upstream
-git pull upstream main
-```
+- Forked from Shopify Dawn
+- Clean Git history
+- Shopify CLI connected to a dev store
+- Runs correctly in the Shopify editor
+- Dawn files are left untouched unless intentionally overridden
 
-## Developer tools
+All Curvea additions are namespaced and isolated.
 
-There are a number of really useful tools that the Shopify Themes team uses during development. Dawn is already set up to work with these tools.
+---
 
-### Shopify CLI
+## Naming & Structure Conventions (LOCKED)
 
-[Shopify CLI](https://github.com/Shopify/shopify-cli) helps you build Shopify themes faster and is used to automate and enhance your local development workflow. It comes bundled with a suite of commands for developing Shopify themes—everything from working with themes on a Shopify store (e.g. creating, publishing, deleting themes) or launching a development server for local theme development.
+- All Curvea sections and snippets are prefixed with `cc-`
+- Dawn files must not be modified casually
+- Shared logic lives in snippets
+- Sections are **structure-first**, not design-first
+- Editor usability always comes before visuals
 
-You can follow this [quick start guide for theme developers](https://shopify.dev/docs/themes/tools/cli) to get started.
+These rules are non-negotiable.
 
-### Theme Check
+---
 
-We recommend using [Theme Check](https://github.com/shopify/theme-check) as a way to validate and lint your Shopify themes.
+## Tailwind v4 Pipeline (Shopify-Safe)
 
-We've added Theme Check to Dawn's [list of VS Code extensions](/.vscode/extensions.json) so if you're using Visual Studio Code as your code editor of choice, you'll be prompted to install the [Theme Check VS Code](https://marketplace.visualstudio.com/items?itemName=Shopify.theme-check-vscode) extension upon opening VS Code after you've forked and cloned Dawn.
+Tailwind is used **locally only**.
 
-You can also run it from a terminal with the following Shopify CLI command:
+- No runtime Tailwind
+- No CDN
+- No editor performance impact
 
-```bash
-shopify theme check
-```
+### Files
+- `assets/cc.tailwind.css` → source
+- `assets/cc.build.css` → compiled output (linked in theme head)
 
-### Continuous Integration
+Compilation is done via local scripts using `npx`.
 
-Dawn uses [GitHub Actions](https://github.com/features/actions) to maintain the quality of the theme. [This is a starting point](https://github.com/Shopify/dawn/blob/main/.github/workflows/ci.yml) and what we suggest to use in order to ensure you're building better themes. Feel free to build off of it!
+This setup is production-safe and Shopify-compliant.
 
-#### Shopify/lighthouse-ci-action
+---
 
-We love fast websites! Which is why we created [Shopify/lighthouse-ci-action](https://github.com/Shopify/lighthouse-ci-action). This runs a series of [Google Lighthouse](https://developers.google.com/web/tools/lighthouse) audits for the home, product and collections pages on a store to ensure code that gets added doesn't degrade storefront performance over time.
+## Core Layout Snippet
 
-#### Shopify/theme-check-action
+### `snippets/cc-container.liquid`
 
-Dawn runs [Theme Check](#Theme-Check) on every commit via [Shopify/theme-check-action](https://github.com/Shopify/theme-check-action).
+Centralized layout control used by all Curvea sections.
 
-## Contributing
+- Consistent width handling
+- Consistent horizontal padding
+- Size options:
+  - `sm`
+  - `md`
+  - `lg`
+  - `xl`
 
-Want to make commerce better for everyone by contributing to Dawn? We'd love your help! Please read our [contributing guide](https://github.com/Shopify/dawn/blob/main/.github/CONTRIBUTING.md) to learn about our development process, how to propose bug fixes and improvements, and how to build for Dawn.
+This guarantees layout consistency across the entire system.
 
-## Code of conduct
+---
 
-All developers who wish to contribute through code or issues, please first read our [Code of Conduct](https://github.com/Shopify/dawn/blob/main/.github/CODE_OF_CONDUCT.md).
+## Core Sections (Structure Complete)
 
-## Theme Store submission
+All sections:
+- are editor-first
+- use configurable blocks
+- include presets
+- contain **no hard branding**
+- use Tailwind utility classes only
+- have no per-section CSS files
 
-The [Shopify Theme Store](https://themes.shopify.com/) is the place where Shopify merchants find the themes that they'll use to showcase and support their business. As a theme partner, you can create themes for the Shopify Theme Store and reach an international audience of an ever-growing number of entrepreneurs.
+### Implemented Sections
 
-Ensure that you follow the list of [theme store requirements](https://shopify.dev/themes/store/requirements) if you're interested in becoming a [Shopify Theme Partner](https://themes.shopify.com/services/themes/guidelines) and building themes for the Shopify platform.
+- `cc-hero-core` (reference pattern)
+- `cc-feature-grid`
+- `cc-image-with-text`
+- `cc-logo-cloud`
+- `cc-testimonials`
+- `cc-faq`
+- `cc-cta`
+- `cc-rich-text`
+- `cc-announcement-bar`
+- `cc-header-shell`
+- `cc-footer-shell`
+- `cc-breadcrumbs`
 
-## License
+`cc-hero-core` defines the architectural pattern that **all future sections must follow**.
 
-Copyright (c) 2021-present Shopify Inc. See [LICENSE](/LICENSE.md) for further details.
+---
+
+## Cart & Catalog Logic
+
+Curvea Core supports advanced commerce modes without breaking Shopify defaults.
+
+### Global Add-to-Cart Toggle
+- Theme setting: `settings.cc_disable_atc_global`
+
+### Product-Level Override
+- Metafield: `product.metafields.custom.disable_atc`
+
+### Behavior When Disabled
+- Add-to-Cart button is hidden
+- Optional CTA mode can be enabled:
+  - custom label
+  - custom link (Contact, Inquiry, WhatsApp, etc.)
+
+### Use Cases
+- catalog-only sites
+- wholesale stores
+- inquiry-based businesses
+- service-driven shops
+
+---
+
+## Cart Mode
+
+Theme setting: `settings.cc_cart_mode`
+
+Supported modes:
+- cart drawer
+- full cart page
+
+Required data attributes are already wired.  
+Visual polish is intentionally deferred.
+
+---
+
+## Buy Buttons
+
+`snippets/buy-buttons.liquid` has been corrected:
+
+- valid Liquid syntax only
+- no unsupported expressions
+- no invalid comment syntax
+- Theme Check safe
+
+---
+
+## JSON Templates
+
+All required JSON templates are present.
+
+- No missing template errors
+- Theme editor loads correctly
+- Codex task merged successfully
+
+---
+
+## CI & Theme Check
+
+- Lighthouse checks are disabled
+- Theme Check is the only enforced CI
+
+Current state:
+- no blocking syntax errors
+- warnings remain (mostly Dawn defaults)
+
+Theme Check cleanup is intentionally deferred to a later phase.
+
+---
+
+## What Is Intentionally Not Done
+
+### Design Layer
+Not started yet:
+- typography system
+- spacing rhythm
+- color tokens
+- motion / animation layer
+
+This is intentional.
+
+### UX Polish
+Not yet implemented:
+- cart animations
+- CTA variants
+- empty states
+- visual hierarchy refinement
+
+### Theme Check Cleanup
+Deferred to a single, final cleanup pass.
+
+---
+
+## Planned Phases
+
+### Phase 1 — Structure Lock
+- finalize all required sections
+- ensure editor usability
+- no design decisions
+
+### Phase 2 — Design Tokens
+- typography scale
+- spacing system
+- button primitives
+- color strategy
+- Curvea visual language
+
+### Phase 3 — UX & Polish
+- cart interactions
+- CTA variants
+- catalog UX improvements
+- micro-interactions
+
+### Phase 4 — Cleanup
+- Theme Check warnings
+- final CI green
+- framework considered stable
+
+---
+
+## Rules for Contributors
+
+- Do **not** hardcode branding
+- Do **not** mix design into logic
+- Follow the `cc-hero-core` pattern for all new sections
+- Tailwind must be compiled — never runtime
+- Editor-first always
+
+If a change violates these rules, it does not belong in Curvea Core.
+
+---
+
+## Repository
+
+https://github.com/CurveaDesign/curvea-core-theme
