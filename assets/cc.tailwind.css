@@ -30,6 +30,18 @@
   --cc-space-10: 3rem;
   --cc-space-11: 3.5rem;
   --cc-space-12: 4rem;
+  /* Section rhythm (tokens only) */
+  --cc-section-y-sm: 2.5rem; /* 40px */
+  --cc-section-y-md: 4rem; /* 64px */
+  --cc-section-y-lg: 6rem; /* 96px */
+
+  /* Stack rhythm */
+  --cc-stack-1: 0.5rem;
+  --cc-stack-2: 0.75rem;
+  --cc-stack-3: 1rem;
+  --cc-stack-4: 1.5rem;
+  --cc-stack-5: 2rem;
+  --cc-stack-6: 3rem;
 
   --cc-container-pad-x: 1.5rem;
 
@@ -108,11 +120,61 @@
   .cc-root a:hover {
     text-decoration: underline;
   }
+
+  /* Curvea prose rhythm (scoped) */
+  .cc-root :where(p) {
+    margin: 0;
+  }
+  .cc-root :where(p + p) {
+    margin-top: var(--cc-stack-3);
+  }
+
+  .cc-root :where(h1, h2, h3, h4) {
+    margin: 0;
+  }
+  .cc-root :where(h1, h2) {
+    margin-bottom: var(--cc-stack-3);
+  }
+  .cc-root :where(h3, h4) {
+    margin-bottom: var(--cc-stack-2);
+  }
+
+  .cc-root :where(ul, ol) {
+    margin: 0;
+    padding-inline-start: 1.25rem;
+  }
+  .cc-root :where(li + li) {
+    margin-top: 0.25rem;
+  }
 }
 
 @layer components {
   .cc-section {
     background-color: var(--cc-bg);
+    padding-block: var(--cc-section-y-md);
+  }
+
+  @media (max-width: 749px) {
+    .cc-section {
+      padding-block: var(--cc-section-y-sm);
+    }
+  }
+
+  .cc-section--tight {
+    padding-block: var(--cc-section-y-sm);
+  }
+  .cc-section--airy {
+    padding-block: var(--cc-section-y-lg);
+  }
+
+  .cc-stack {
+    gap: var(--cc-stack-4);
+  }
+  .cc-stack--tight {
+    gap: var(--cc-stack-2);
+  }
+  .cc-stack--airy {
+    gap: var(--cc-stack-5);
   }
 
   .cc-card {
