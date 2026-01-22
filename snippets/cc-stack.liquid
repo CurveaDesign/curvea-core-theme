@@ -3,6 +3,8 @@
   assign classes = classes | default: ''
 -%}
 
-<div class="flex flex-col {{ gap }} {{ classes }}">
-  {{ content }}
-</div>
+{%- if content != blank -%}
+  <div class="flex flex-col {{ gap }} {{ classes }}">
+    {{ content }}
+  </div>
+{%- endif -%}
