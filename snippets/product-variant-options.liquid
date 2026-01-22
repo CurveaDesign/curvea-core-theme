@@ -66,8 +66,7 @@
       {{ label_unavailable }}
     {%- endcapture -%}
 
-    {%
-      render 'swatch-input',
+    {% render 'swatch-input',
       id: input_id,
       name: input_name,
       value: escaped_value,
@@ -93,9 +92,14 @@
         class="disabled"
       {% endif %}
       {{ input_dataset }}
+
+      {% if option_disabled %}
+        disabled
+        aria-disabled="true"
+      {% endif %}
     >
     <label for="{{ input_id }}">
-      {{ value -}}
+      {{ escaped_value }}
       {{ label_unavailable }}
     </label>
   {%- elsif picker_type == 'dropdown' or picker_type == 'swatch_dropdown' -%}
