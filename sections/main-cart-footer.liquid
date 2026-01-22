@@ -110,16 +110,17 @@
                   id="checkout"
                   class="cart__checkout-button button"
                   name="checkout"
+                  form="cart"
                   {% if cart == empty %}
                     disabled
+                    aria-disabled="true"
                   {% endif %}
-                  form="cart"
                 >
                   {{ 'sections.cart.checkout' | t }}
                 </button>
               </div>
 
-              {%- if additional_checkout_buttons -%}
+              {%- if additional_checkout_buttons and cart != empty -%}
                 <div class="cart__dynamic-checkout-buttons additional-checkout-buttons">
                   {{ content_for_additional_checkout_buttons }}
                 </div>
@@ -127,7 +128,7 @@
           {%- endcase -%}
         {% endfor %}
 
-        <div id="cart-errors"></div>
+        <div id="cart-errors" role="alert" aria-live="polite" aria-atomic="true"></div>
       </div>
     </div>
   </div>
@@ -147,7 +148,7 @@
     {
       "type": "header",
       "content": "t:sections.all.padding.section_padding_heading"
-    },    
+    },
     {
       "type": "range",
       "id": "padding_top",
