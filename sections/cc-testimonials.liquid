@@ -20,13 +20,17 @@
   endcase
 
   assign text_align = ''
+  assign prose_align = ''
   case align
     when 'center'
       assign text_align = 'text-center items-center'
+      assign prose_align = 'mx-auto'
     when 'right'
       assign text_align = 'text-right items-end'
+      assign prose_align = 'ml-auto'
     else
       assign text_align = 'text-left items-start'
+      assign prose_align = ''
   endcase
 -%}
 
@@ -44,9 +48,10 @@
       {%- for block in section.blocks -%}
         {%- if block.type == 'testimonial' -%}
           <article {{ block.shopify_attributes }} class="flex flex-col gap-4 rounded-2xl border border-current/10 p-6">
-            <div class="text-base opacity-90">
+            <blockquote class="text-base opacity-90 rte {{ prose_align }}">
               {{ block.settings.quote }}
-            </div>
+            </blockquote>
+
             <div class="flex items-center gap-3">
               {% render 'cc-media', image: block.settings.avatar, aspect: '1/1', classes: 'h-10 w-10 overflow-hidden rounded-full flex-shrink-0', img_class: 'h-full w-full object-cover' %}
               <div>
@@ -175,31 +180,17 @@
     {
       "name": "CC Testimonials — Cards",
       "settings": { "variant": "cards", "align": "left", "bg": "bg-white", "text": "text-neutral-900" },
-      "blocks": [
-        { "type": "heading" },
-        { "type": "testimonial" },
-        { "type": "testimonial" },
-        { "type": "testimonial" }
-      ]
+      "blocks": [{ "type": "heading" }, { "type": "testimonial" }, { "type": "testimonial" }, { "type": "testimonial" }]
     },
     {
       "name": "CC Testimonials — List",
       "settings": { "variant": "list", "align": "left", "bg": "bg-neutral-50", "text": "text-neutral-900" },
-      "blocks": [
-        { "type": "heading" },
-        { "type": "testimonial" },
-        { "type": "testimonial" }
-      ]
+      "blocks": [{ "type": "heading" }, { "type": "testimonial" }, { "type": "testimonial" }]
     },
     {
       "name": "CC Testimonials — Dark",
       "settings": { "variant": "cards", "align": "center", "bg": "bg-neutral-950", "text": "text-white" },
-      "blocks": [
-        { "type": "heading" },
-        { "type": "testimonial" },
-        { "type": "testimonial" },
-        { "type": "testimonial" }
-      ]
+      "blocks": [{ "type": "heading" }, { "type": "testimonial" }, { "type": "testimonial" }, { "type": "testimonial" }]
     }
   ]
 }
