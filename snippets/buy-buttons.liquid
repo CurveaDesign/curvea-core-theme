@@ -88,25 +88,20 @@
           -%}
 
           {%- if cc_disable_atc -%}
-            {%- if settings.cc_disable_atc_mode == 'cta' -%}
-              {%- if settings.cc_disable_atc_link != blank -%}
-                <a
-                  class="product-form__submit button button--full-width button--primary product-form__primary-action"
-                  href="{{ settings.cc_disable_atc_link }}"
-                >
-                  {{ settings.cc_disable_atc_label }}
-                </a>
-              {%- else -%}
-                <button
-                  type="button"
-                  class="product-form__submit button button--full-width button--primary product-form__primary-action"
-                  disabled
-                  aria-disabled="true"
-                >
-                  {{ settings.cc_disable_atc_label }}
-                </button>
-              {%- endif -%}
-            {%- endif -%}
+            {%- liquid
+              assign cc_disable_label = settings.cc_disable_atc_label
+              if cc_disable_label == blank
+                assign cc_disable_label = 'products.product.sold_out' | t
+              endif
+            -%}
+            <button
+              type="button"
+              class="product-form__submit button button--full-width button--primary product-form__primary-action"
+              disabled
+              aria-disabled="true"
+            >
+              {{ cc_disable_label }}
+            </button>
           {%- else -%}
             <button
               id="ProductSubmitButton-{{ section_id }}"
