@@ -8,6 +8,21 @@
   --cc-border: #e5e7eb;
   --cc-accent: #1f2937;
 
+  /* Semantic colors (framework-level, neutral defaults) */
+  --cc-success: #16a34a;
+  --cc-warning: #f59e0b;
+  --cc-danger: #dc2626;
+  --cc-info: #2563eb;
+
+  /* Subtle tints for backgrounds (used for badges/alerts) */
+  --cc-success-bg: rgba(22, 163, 74, 0.1);
+  --cc-warning-bg: rgba(245, 158, 11, 0.12);
+  --cc-danger-bg: rgba(220, 38, 38, 0.1);
+  --cc-info-bg: rgba(37, 99, 235, 0.1);
+
+  /* Focus ring should follow accent by default */
+  --cc-btn-ring: rgba(31, 41, 55, 0.22);
+
   --cc-radius-sm: 0.375rem;
   --cc-radius-md: 0.5rem;
   --cc-radius-lg: 0.75rem;
@@ -291,5 +306,35 @@
 
   .cc-border {
     border-color: var(--cc-border);
+  }
+
+  .cc-success {
+    color: var(--cc-success);
+  }
+  .cc-warning {
+    color: var(--cc-warning);
+  }
+  .cc-danger {
+    color: var(--cc-danger);
+  }
+  .cc-info {
+    color: var(--cc-info);
+  }
+
+  .cc-badge-success {
+    background: var(--cc-success-bg);
+    color: var(--cc-success);
+  }
+  .cc-badge-warning {
+    background: var(--cc-warning-bg);
+    color: var(--cc-warning);
+  }
+  .cc-badge-danger {
+    background: var(--cc-danger-bg);
+    color: var(--cc-danger);
+  }
+  .cc-badge-info {
+    background: var(--cc-info-bg);
+    color: var(--cc-info);
   }
 }
