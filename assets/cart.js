@@ -11,7 +11,9 @@ class CartRemoveButton extends HTMLElement {
   }
 }
 
-customElements.define('cart-remove-button', CartRemoveButton);
+if (!customElements.get('cart-remove-button')) {
+  customElements.define('cart-remove-button', CartRemoveButton);
+}
 
 class CartItems extends HTMLElement {
   constructor() {
@@ -250,7 +252,9 @@ class CartItems extends HTMLElement {
   }
 }
 
-customElements.define('cart-items', CartItems);
+if (!customElements.get('cart-items')) {
+  customElements.define('cart-items', CartItems);
+}
 
 if (!customElements.get('cart-note')) {
   customElements.define(
