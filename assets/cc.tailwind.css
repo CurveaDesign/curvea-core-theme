@@ -18,6 +18,21 @@
   --cc-shadow-md: 0 6px 16px rgba(15, 23, 42, 0.12);
   --cc-shadow-lg: 0 16px 32px rgba(15, 23, 42, 0.16);
 
+  /* Button tokens */
+  --cc-btn-radius: var(--cc-radius-xl);
+  --cc-btn-font-weight: 600;
+
+  --cc-btn-pad-y-sm: 0.5rem;
+  --cc-btn-pad-x-sm: 0.875rem;
+
+  --cc-btn-pad-y-md: 0.625rem;
+  --cc-btn-pad-x-md: 1.125rem;
+
+  --cc-btn-pad-y-lg: 0.75rem;
+  --cc-btn-pad-x-lg: 1.25rem;
+
+  --cc-btn-ring: rgba(17, 24, 39, 0.18); /* neutral, not branded */
+
   --cc-space-1: 0.25rem;
   --cc-space-2: 0.5rem;
   --cc-space-3: 0.75rem;
@@ -168,6 +183,8 @@
   }
 
   .cc-stack {
+    display: flex;
+    flex-direction: column;
     gap: var(--cc-stack-4);
   }
   .cc-stack--tight {
@@ -189,20 +206,59 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--cc-radius-xl);
-    padding: var(--cc-space-3) var(--cc-space-5);
-    font-size: var(--cc-text-sm);
-    font-weight: 600;
+    gap: var(--cc-space-2);
+    border-radius: var(--cc-btn-radius);
+    font-weight: var(--cc-btn-font-weight);
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
     transition:
       background-color 0.2s ease,
       color 0.2s ease,
-      border-color 0.2s ease;
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.06s ease;
   }
 
+  .cc-btn:active {
+    transform: translateY(1px);
+  }
+
+  .cc-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px var(--cc-btn-ring);
+  }
+
+  .cc-btn[aria-disabled='true'],
+  .cc-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Sizes */
+  .cc-btn--sm {
+    padding: var(--cc-btn-pad-y-sm) var(--cc-btn-pad-x-sm);
+    font-size: var(--cc-text-sm);
+  }
+  .cc-btn--md {
+    padding: var(--cc-btn-pad-y-md) var(--cc-btn-pad-x-md);
+    font-size: var(--cc-text-sm);
+  }
+  .cc-btn--lg {
+    padding: var(--cc-btn-pad-y-lg) var(--cc-btn-pad-x-lg);
+    font-size: var(--cc-text-base);
+  }
+
+  /* Variants */
   .cc-btn--primary {
     background-color: var(--cc-accent);
     color: #ffffff;
     border: 1px solid transparent;
+  }
+  .cc-btn--primary:hover {
+    filter: brightness(0.95);
   }
 
   .cc-btn--secondary {
@@ -210,17 +266,21 @@
     color: var(--cc-accent);
     border: 1px solid var(--cc-border);
   }
+  .cc-btn--secondary:hover {
+    background-color: rgba(17, 24, 39, 0.04);
+  }
 
   .cc-btn--ghost {
     background-color: transparent;
     color: var(--cc-ink);
     border: 1px solid transparent;
   }
+  .cc-btn--ghost:hover {
+    background-color: rgba(17, 24, 39, 0.04);
+  }
 
-  .cc-stack {
-    display: flex;
-    flex-direction: column;
-    gap: var(--cc-space-4);
+  .cc-btn--block {
+    width: 100%;
   }
 }
 
