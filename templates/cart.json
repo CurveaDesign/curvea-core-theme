@@ -9,6 +9,10 @@
     },
     "cart-footer": {
       "type": "main-cart-footer",
+      "settings": {
+        "padding_top": 36,
+        "padding_bottom": 36
+      },
       "blocks": {
         "subtotal": {
           "type": "subtotal",
