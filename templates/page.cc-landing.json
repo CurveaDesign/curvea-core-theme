@@ -1,0 +1,142 @@
+{
+  "sections": {
+    "hero": {
+      "type": "cc-hero-core",
+      "blocks": {
+        "hero-kicker": {
+          "type": "kicker",
+          "settings": {}
+        },
+        "hero-heading": {
+          "type": "heading",
+          "settings": {}
+        },
+        "hero-text": {
+          "type": "text",
+          "settings": {}
+        },
+        "hero-buttons": {
+          "type": "buttons",
+          "settings": {}
+        },
+        "hero-media": {
+          "type": "media",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "hero-kicker",
+        "hero-heading",
+        "hero-text",
+        "hero-buttons",
+        "hero-media"
+      ],
+      "settings": {
+        "variant": "split_left",
+        "align": "left",
+        "bg": "bg-neutral-50",
+        "text": "text-neutral-900"
+      }
+    },
+    "image-with-text": {
+      "type": "cc-image-with-text",
+      "blocks": {
+        "image-with-text-kicker": {
+          "type": "kicker",
+          "settings": {}
+        },
+        "image-with-text-heading": {
+          "type": "heading",
+          "settings": {}
+        },
+        "image-with-text-text": {
+          "type": "text",
+          "settings": {}
+        },
+        "image-with-text-buttons": {
+          "type": "buttons",
+          "settings": {}
+        },
+        "image-with-text-media": {
+          "type": "media",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "image-with-text-kicker",
+        "image-with-text-heading",
+        "image-with-text-text",
+        "image-with-text-buttons",
+        "image-with-text-media"
+      ],
+      "settings": {
+        "variant": "image_right",
+        "align": "left",
+        "bg": "bg-white",
+        "text": "text-neutral-900"
+      }
+    },
+    "steps": {
+      "type": "cc-steps",
+      "blocks": {
+        "step-1": {
+          "type": "step",
+          "settings": {}
+        },
+        "step-2": {
+          "type": "step",
+          "settings": {}
+        },
+        "step-3": {
+          "type": "step",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "step-1",
+        "step-2",
+        "step-3"
+      ],
+      "settings": {}
+    },
+    "cta": {
+      "type": "cc-cta",
+      "blocks": {
+        "cta-kicker": {
+          "type": "kicker",
+          "settings": {}
+        },
+        "cta-heading": {
+          "type": "heading",
+          "settings": {}
+        },
+        "cta-text": {
+          "type": "text",
+          "settings": {}
+        },
+        "cta-buttons": {
+          "type": "buttons",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "cta-kicker",
+        "cta-heading",
+        "cta-text",
+        "cta-buttons"
+      ],
+      "settings": {
+        "variant": "center",
+        "align": "center",
+        "bg": "bg-neutral-50",
+        "text": "text-neutral-900"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "image-with-text",
+    "steps",
+    "cta"
+  ]
+}
