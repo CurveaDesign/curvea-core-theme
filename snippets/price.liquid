@@ -39,8 +39,15 @@
     assign money_price = 'products.product.price.from_price_html' | t: price: money_price
   endif
 
-  assign show_sale = compare_at_price > price and product.quantity_price_breaks_configured? != true
-  assign show_sold_out = available == false
+  assign show_sale = false
+  if compare_at_price > price and product.quantity_price_breaks_configured != true
+    assign show_sale = true
+  endif
+
+  assign show_sold_out = false
+  if available == false
+    assign show_sold_out = true
+  endif
 -%}
 
 {%- unless target == null and placeholder == null -%}
