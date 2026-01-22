@@ -7,11 +7,14 @@
   assign gap = section.settings.gap
 
   assign align_class = 'text-left'
+  assign items_class = 'items-start'
   case align
     when 'center'
       assign align_class = 'text-center'
+      assign items_class = 'items-center'
     when 'right'
       assign align_class = 'text-right'
+      assign items_class = 'items-end'
   endcase
 
   assign py_class = 'py-10 sm:py-14'
@@ -44,10 +47,16 @@
   endcase
 -%}
 
-<section class="cc-section {{ py_class }} {{ bg_class }} {{ text_class }}">
+<section {{ section.shopify_attributes }} class="cc-section {{ py_class }} {{ bg_class }} {{ text_class }}">
   {%- capture header_content -%}
-    {%- render 'cc-heading', tag: 'h2', text: section.settings.heading, align: align -%}
-    {%- render 'cc-heading', tag: 'p', text: section.settings.subheading, align: align, classes: 'text-base text-current/70' -%}
+    {%- if section.settings.heading != blank -%}
+      {%- render 'cc-heading', tag: 'h2', text: section.settings.heading, align: align -%}
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      {%- render 'cc-heading', tag: 'p', text: section.settings.subheading, align: align, classes: 'text-base text-current/70' -%}
+    {%- endif -%}
+
     {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
       {%- render 'cc-button', label: section.settings.button_label, href: section.settings.button_link, variant: section.settings.button_variant -%}
     {%- endif -%}
@@ -56,23 +65,29 @@
   {%- capture badge_content -%}
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {%- for block in section.blocks -%}
-        <div class="cc-card flex flex-col gap-4" {{ block.shopify_attributes }}>
-          {%- if block.settings.icon != blank -%}
-            <div class="w-12">
-              {%- render 'cc-media', image: block.settings.icon, aspect: '1/1', classes: 'w-12' -%}
-            </div>
-          {%- endif -%}
-          <div class="text-sm font-semibold uppercase tracking-wide">{{ block.settings.title }}</div>
-          {%- if block.settings.text != blank -%}
-            <p class="text-sm text-current/70">{{ block.settings.text }}</p>
-          {%- endif -%}
-        </div>
+        {%- if block.type == 'badge' -%}
+          <div class="cc-card flex flex-col {{ gap_class }} {{ items_class }}" {{ block.shopify_attributes }}>
+            {%- if block.settings.icon != blank -%}
+              <div class="w-12">
+                {%- render 'cc-media', image: block.settings.icon, aspect: '1/1', classes: 'w-12' -%}
+              </div>
+            {%- endif -%}
+
+            <div class="text-sm font-semibold uppercase tracking-wide">{{ block.settings.title | escape }}</div>
+
+            {%- if block.settings.text != blank -%}
+              <p class="text-sm text-current/70">{{ block.settings.text | escape }}</p>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
       {%- endfor -%}
     </div>
   {%- endcapture -%}
 
   {%- capture section_content -%}
-    {%- render 'cc-stack', gap: gap_class, classes: align_class, content: header_content -%}
+    {%- if header_content != blank -%}
+      {%- render 'cc-stack', gap: gap_class, classes: align_class, content: header_content -%}
+    {%- endif -%}
     {{ badge_content }}
   {%- endcapture -%}
 
@@ -212,35 +227,19 @@
   "presets": [
     {
       "name": "Classic",
-      "blocks": [
-        { "type": "badge" },
-        { "type": "badge" },
-        { "type": "badge" },
-        { "type": "badge" }
-      ]
+      "blocks": [{ "type": "badge" }, { "type": "badge" }, { "type": "badge" }, { "type": "badge" }]
     },
     {
       "name": "Split",
-      "blocks": [
-        { "type": "badge" },
-        { "type": "badge" },
-        { "type": "badge" }
-      ]
+      "blocks": [{ "type": "badge" }, { "type": "badge" }, { "type": "badge" }]
     },
     {
       "name": "Minimal",
-      "blocks": [
-        { "type": "badge" },
-        { "type": "badge" }
-      ]
+      "blocks": [{ "type": "badge" }, { "type": "badge" }]
     },
     {
       "name": "Editorial",
-      "blocks": [
-        { "type": "badge" },
-        { "type": "badge" },
-        { "type": "badge" }
-      ]
+      "blocks": [{ "type": "badge" }, { "type": "badge" }, { "type": "badge" }]
     }
   ]
 }
