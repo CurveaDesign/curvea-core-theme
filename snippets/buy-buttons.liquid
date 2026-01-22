@@ -2,7 +2,7 @@
   {%- if product != blank -%}
     {%- liquid
       assign gift_card_recipient_feature_active = false
-      if block.settings.show_gift_card_recipient and product.gift_card?
+      if block.settings.show_gift_card_recipient and product.gift_card
         assign gift_card_recipient_feature_active = true
       endif
 
@@ -101,6 +101,7 @@
                   type="button"
                   class="product-form__submit button button--full-width button--primary product-form__primary-action"
                   disabled
+                  aria-disabled="true"
                 >
                   {{ settings.cc_disable_atc_label }}
                 </button>
@@ -129,7 +130,9 @@
                   {{ 'products.product.add_to_cart' | t }}
                 {%- endif -%}
               </span>
-              {%- render 'loading-spinner' -%}
+              <span class="product-form__loading" aria-hidden="true">
+                {%- render 'loading-spinner' -%}
+              </span>
             </button>
 
             {%- if show_dynamic_checkout -%}
