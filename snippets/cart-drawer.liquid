@@ -11,6 +11,10 @@
 <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
 
+{% comment %}
+  Dawn hides the drawer until JS hydrates it.
+  Keep this rule minimal and scoped.
+{% endcomment %}
 <style>
   .drawer {
     visibility: hidden;
@@ -76,7 +80,7 @@
       </div>
       <cart-drawer-items
         {% if cart == empty %}
-          class=" is-empty"
+          class="is-empty"
         {% endif %}
       >
         <form
@@ -132,16 +136,20 @@
                           headers="CartDrawer-ColumnProductImage"
                         >
                           {% if item.image %}
-                            {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
-                            <a href="{{ item.url }}" class="cart-item__link" tabindex="-1" aria-hidden="true"> </a>
-                            <img
-                              class="cart-item__image"
-                              src="{{ item.image | image_url: width: 300 }}"
-                              alt="{{ item.image.alt | escape }}"
-                              loading="lazy"
-                              width="150"
-                              height="{{ 150 | divided_by: item.image.aspect_ratio | ceil }}"
+                            <a
+                              href="{{ item.url }}"
+                              class="cart-item__link"
+                              aria-label="{{ item.product.title | escape }}"
                             >
+                              <img
+                                class="cart-item__image"
+                                src="{{ item.image | image_url: width: 300 }}"
+                                alt="{{ item.image.alt | escape }}"
+                                loading="lazy"
+                                width="150"
+                                height="{{ 150 | divided_by: item.image.aspect_ratio | ceil }}"
+                              >
+                            </a>
                           {% endif %}
                         </td>
 
@@ -258,7 +266,10 @@
                             {%- endif -%}
 
                             {%- if item.variant.available and item.unit_price_measurement -%}
-                              {% render 'unit-price', price: item.unit_price, measurement: item.unit_price_measurement %}
+                              {% render 'unit-price',
+                                price: item.unit_price,
+                                measurement: item.unit_price_measurement
+                              %}
                             {%- endif -%}
                           </div>
                         </td>
@@ -350,12 +361,9 @@
                               >
                                 <button
                                   type="button"
-                                  class="button button--tertiary cart-remove-button"
+                                  class="button button--tertiary cart-remove-button{% if item.instructions and item.instructions.can_remove == false %} hidden{% endif %}"
                                   aria-label="{{ 'sections.cart.remove_title' | t: title: item.title | escape }}"
                                   data-variant-id="{{ item.variant.id }}"
-                                  {% if item.instructions and item.instructions.can_remove == false %}
-                                    class="hidden"
-                                  {% endif %}
                                 >
                                   <span class="svg-wrapper">
                                     {{- 'icon-remove.svg' | inline_asset_content -}}
@@ -570,6 +578,7 @@
             form="CartDrawer-Form"
             {% if cart == empty %}
               disabled
+              aria-disabled="true"
             {% endif %}
           >
             {{ 'sections.cart.checkout' | t }}
