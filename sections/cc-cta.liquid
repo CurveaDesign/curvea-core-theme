@@ -11,8 +11,6 @@
 
   assign grid_class = ''
   case variant
-    when 'center'
-      assign grid_class = 'flex flex-col'
     when 'split'
       assign grid_class = 'grid grid-cols-1 lg:grid-cols-2'
     else
@@ -20,13 +18,17 @@
   endcase
 
   assign text_align = ''
+  assign prose_align = ''
   case align
     when 'center'
       assign text_align = 'text-center items-center'
+      assign prose_align = 'mx-auto'
     when 'right'
       assign text_align = 'text-right items-end'
+      assign prose_align = 'ml-auto'
     else
       assign text_align = 'text-left items-start'
+      assign prose_align = ''
   endcase
 -%}
 
@@ -38,10 +40,14 @@
           {%- case block.type -%}
             {%- when 'kicker' -%}
               {% render 'cc-heading', tag: 'p', text: block.settings.text, classes: 'text-sm font-medium opacity-80', align: align, shopify_attributes: block.shopify_attributes %}
+
             {%- when 'heading' -%}
               {% render 'cc-heading', tag: 'h2', text: block.settings.text, classes: 'mt-3', align: align, shopify_attributes: block.shopify_attributes %}
+
             {%- when 'text' -%}
-              {% render 'cc-heading', tag: 'p', text: block.settings.text, classes: 'mt-4 max-w-prose text-base sm:text-lg opacity-90', align: align, shopify_attributes: block.shopify_attributes %}
+              <div {{ block.shopify_attributes }} class="mt-4 max-w-prose text-base sm:text-lg opacity-90 rte {{ prose_align }}">
+                {{ block.settings.text }}
+              </div>
           {%- endcase -%}
         {%- endfor -%}
       </div>
@@ -49,20 +55,38 @@
       {%- for block in section.blocks -%}
         {%- if block.type == 'buttons' -%}
           {%- liquid
+            assign has_primary = false
+            if block.settings.primary_label != blank and block.settings.primary_link != blank
+              assign has_primary = true
+            endif
+
+            assign has_secondary = false
+            if block.settings.secondary_label != blank and block.settings.secondary_link != blank
+              assign has_secondary = true
+            endif
+
             assign btn_wrap = 'flex flex-wrap gap-3'
             if variant == 'center'
               assign btn_wrap = btn_wrap | append: ' mt-6'
             endif
+
             if align == 'center'
               assign btn_wrap = btn_wrap | append: ' justify-center'
             elsif align == 'right'
               assign btn_wrap = btn_wrap | append: ' justify-end'
             endif
           -%}
-          <div {{ block.shopify_attributes }} class="{{ btn_wrap }}">
-            {% render 'cc-button', label: block.settings.primary_label, href: block.settings.primary_link, variant: 'primary' %}
-            {% render 'cc-button', label: block.settings.secondary_label, href: block.settings.secondary_link, variant: 'secondary' %}
-          </div>
+
+          {%- if has_primary or has_secondary -%}
+            <div {{ block.shopify_attributes }} class="{{ btn_wrap }}">
+              {%- if has_primary -%}
+                {% render 'cc-button', label: block.settings.primary_label, href: block.settings.primary_link, variant: 'primary' %}
+              {%- endif -%}
+              {%- if has_secondary -%}
+                {% render 'cc-button', label: block.settings.secondary_label, href: block.settings.secondary_link, variant: 'secondary' %}
+              {%- endif -%}
+            </div>
+          {%- endif -%}
         {%- endif -%}
       {%- endfor -%}
     </div>
