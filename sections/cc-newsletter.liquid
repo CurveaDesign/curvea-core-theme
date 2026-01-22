@@ -47,10 +47,15 @@
   endcase
 -%}
 
-<section class="cc-section {{ py_class }} {{ bg_class }} {{ text_class }}">
+<section {{ section.shopify_attributes }} class="cc-section {{ py_class }} {{ bg_class }} {{ text_class }}">
   {%- capture header_content -%}
-    {%- render 'cc-heading', tag: 'h2', text: section.settings.heading, align: align -%}
-    {%- render 'cc-heading', tag: 'p', text: section.settings.subheading, align: align, classes: 'text-base text-current/70' -%}
+    {%- if section.settings.heading != blank -%}
+      {%- render 'cc-heading', tag: 'h2', text: section.settings.heading, align: align -%}
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      {%- render 'cc-heading', tag: 'p', text: section.settings.subheading, align: align, classes: 'text-base text-current/70' -%}
+    {%- endif -%}
   {%- endcapture -%}
 
   {%- capture form_content -%}
@@ -59,21 +64,27 @@
         {{ section.settings.embed_html }}
       {%- else -%}
         <form class="flex flex-col gap-4" method="post" action="/contact#contact_form">
-          <label class="text-sm font-medium" for="NewsletterEmail-{{ section.id }}">{{ section.settings.fallback_label }}</label>
+          {%- if section.settings.fallback_label != blank -%}
+            <label class="text-sm font-medium" for="NewsletterEmail-{{ section.id }}">{{ section.settings.fallback_label | escape }}</label>
+          {%- endif -%}
+
           <input
             id="NewsletterEmail-{{ section.id }}"
             type="email"
             name="contact[email]"
-            placeholder="{{ section.settings.fallback_placeholder }}"
+            placeholder="{{ section.settings.fallback_placeholder | escape }}"
             class="w-full rounded-xl border border-current/20 bg-transparent px-4 py-3 text-sm"
             required
           >
-          {%- if section.settings.button_link != blank -%}
-            {%- render 'cc-button', label: section.settings.button_label, href: section.settings.button_link, variant: section.settings.button_variant, classes: 'self-start' -%}
-          {%- else -%}
-            <button type="submit" class="cc-btn cc-btn--primary self-start">
-              {{ section.settings.button_label }}
-            </button>
+
+          {%- if section.settings.button_label != blank -%}
+            {%- if section.settings.button_link != blank -%}
+              {%- render 'cc-button', label: section.settings.button_label, href: section.settings.button_link, variant: section.settings.button_variant, classes: 'self-start' -%}
+            {%- else -%}
+              <button type="submit" class="cc-btn cc-btn--primary self-start">
+                {{ section.settings.button_label | escape }}
+              </button>
+            {%- endif -%}
           {%- endif -%}
         </form>
       {%- endif -%}
@@ -88,18 +99,26 @@
     {%- endif -%}
   {%- endcapture -%}
 
+  {%- capture notes_content -%}
+    {%- if section.blocks.size > 0 -%}
+      <div class="text-sm text-current/70">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'note' and block.settings.note != blank -%}
+            <div {{ block.shopify_attributes }}>{{ block.settings.note | escape }}</div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  {%- endcapture -%}
+
   {%- capture section_content -%}
     <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center">
       <div class="flex flex-col {{ gap_class }} {{ align_class }}">
-        {%- render 'cc-stack', gap: gap_class, classes: '', content: header_content -%}
-        {{ form_content }}
-        {%- if section.blocks.size > 0 -%}
-          <div class="text-sm text-current/70">
-            {%- for block in section.blocks -%}
-              <div {{ block.shopify_attributes }}>{{ block.settings.note }}</div>
-            {%- endfor -%}
-          </div>
+        {%- if header_content != blank -%}
+          {%- render 'cc-stack', gap: gap_class, classes: '', content: header_content -%}
         {%- endif -%}
+        {{ form_content }}
+        {{ notes_content }}
       </div>
       {{ media_content }}
     </div>
@@ -112,42 +131,17 @@
 {
   "name": "CC Newsletter",
   "settings": [
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "Join the list"
-    },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Join the list" },
     {
       "type": "text",
       "id": "subheading",
       "label": "Subheading",
       "default": "New releases, tips, and updates delivered monthly."
     },
-    {
-      "type": "textarea",
-      "id": "embed_html",
-      "label": "Embed HTML",
-      "info": "Paste Klaviyo or Mailchimp embed code."
-    },
-    {
-      "type": "text",
-      "id": "fallback_label",
-      "label": "Fallback label",
-      "default": "Email address"
-    },
-    {
-      "type": "text",
-      "id": "fallback_placeholder",
-      "label": "Fallback placeholder",
-      "default": "you@example.com"
-    },
-    {
-      "type": "text",
-      "id": "button_label",
-      "label": "Button label",
-      "default": "Subscribe"
-    },
+    { "type": "textarea", "id": "embed_html", "label": "Embed HTML", "info": "Paste Klaviyo or Mailchimp embed code." },
+    { "type": "text", "id": "fallback_label", "label": "Fallback label", "default": "Email address" },
+    { "type": "text", "id": "fallback_placeholder", "label": "Fallback placeholder", "default": "you@example.com" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Subscribe" },
     {
       "type": "url",
       "id": "button_link",
@@ -165,11 +159,7 @@
         { "value": "ghost", "label": "Ghost" }
       ]
     },
-    {
-      "type": "image_picker",
-      "id": "image",
-      "label": "Optional image"
-    },
+    { "type": "image_picker", "id": "image", "label": "Optional image" },
     {
       "type": "select",
       "id": "image_aspect",
@@ -254,41 +244,14 @@
     {
       "type": "note",
       "name": "Note",
-      "settings": [
-        {
-          "type": "text",
-          "id": "note",
-          "label": "Note",
-          "default": "No spam. Unsubscribe anytime."
-        }
-      ]
+      "settings": [{ "type": "text", "id": "note", "label": "Note", "default": "No spam. Unsubscribe anytime." }]
     }
   ],
   "presets": [
-    {
-      "name": "Classic",
-      "blocks": [
-        { "type": "note" }
-      ]
-    },
-    {
-      "name": "Split",
-      "blocks": [
-        { "type": "note" }
-      ]
-    },
-    {
-      "name": "Minimal",
-      "blocks": [
-        { "type": "note" }
-      ]
-    },
-    {
-      "name": "Editorial",
-      "blocks": [
-        { "type": "note" }
-      ]
-    }
+    { "name": "Classic", "blocks": [{ "type": "note" }] },
+    { "name": "Split", "blocks": [{ "type": "note" }] },
+    { "name": "Minimal", "blocks": [{ "type": "note" }] },
+    { "name": "Editorial", "blocks": [{ "type": "note" }] }
   ]
 }
 {% endschema %}
