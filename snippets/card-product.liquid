@@ -244,7 +244,7 @@
                 </span>
               </p>
             {%- endif -%}
-            {%- if card_product.quantity_price_breaks_configured? -%}
+            {%- if card_product.quantity_price_breaks_configured -%}
               {% if card_product.variants_count == 1 and quick_add == 'bulk' %}
                 {% liquid
                   assign quantity_rule = card_product.selected_or_first_available_variant.quantity_rule
@@ -255,7 +255,7 @@
                 %}
                 <quantity-popover>
                   <button
-                    class="card__information-volume-pricing-note card__information-volume-pricing-note--button card__information-volume-pricing-note--button-{{ settings.card_text_alignment }} quantity-popover__info-button--icon-only button button button--tertiary medium-hide small-hide"
+                    class="card__information-volume-pricing-note card__information-volume-pricing-note--button card__information-volume-pricing-note--button-{{ settings.card_text_alignment }} quantity-popover__info-button--icon-only button button--tertiary medium-hide small-hide"
                     type="button"
                   >
                     <span class="caption">{{ 'products.product.volume_pricing.note' | t }}</span>
