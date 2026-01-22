@@ -1454,6 +1454,28 @@
     ]
   },
   {
+  "name": "Curvea Core — Design",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Curvea accents"
+    },
+    {
+      "type": "color",
+      "id": "cc_accent_2",
+      "label": "Accent 2",
+      "default": "#ff3ea5"
+    },
+    {
+      "type": "color",
+      "id": "cc_accent_3",
+      "label": "Accent 3",
+      "default": "#4b7bff"
+    }
+  ]
+},
+
+  {
     "name": "t:settings_schema.cart.name",
     "settings": [
       {

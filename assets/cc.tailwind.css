@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 
 @theme {
+  /* Fallbacks only — actual values are bound to Shopify color schemes in @layer base */
   --cc-bg: #ffffff;
   --cc-surface: #f9fafb;
   --cc-ink: #111827;
@@ -8,7 +9,7 @@
   --cc-border: #e5e7eb;
   --cc-accent: #1f2937;
 
-  /* Semantic colors (framework-level, neutral defaults) */
+  /* Semantic colors (framework-level, defaults) */
   --cc-success: #16a34a;
   --cc-warning: #f59e0b;
   --cc-danger: #dc2626;
@@ -20,8 +21,19 @@
   --cc-danger-bg: rgba(220, 38, 38, 0.1);
   --cc-info-bg: rgba(37, 99, 235, 0.1);
 
-  /* Focus ring should follow accent by default */
+  /* Focus ring (will be overridden by scheme binding) */
   --cc-btn-ring: rgba(31, 41, 55, 0.22);
+
+  /* Curvea identity tokens:
+     Accent 2 + Accent 3 MUST come from theme settings via theme.liquid :root vars:
+     --cc-accent-2: {{ settings.cc_accent_2 }};
+     --cc-accent-3: {{ settings.cc_accent_3 }};
+  */
+  --cc-gradient: linear-gradient(135deg, var(--cc-accent) 0%, var(--cc-accent-2) 45%, var(--cc-accent-3) 100%);
+
+  --cc-glow:
+    0 0 0.9rem color-mix(in srgb, var(--cc-accent-2) 22%, transparent),
+    0 0 1.6rem color-mix(in srgb, var(--cc-accent-3) 18%, transparent);
 
   --cc-radius-sm: 0.375rem;
   --cc-radius-md: 0.5rem;
@@ -46,8 +58,6 @@
   --cc-btn-pad-y-lg: 0.75rem;
   --cc-btn-pad-x-lg: 1.25rem;
 
-  --cc-btn-ring: rgba(17, 24, 39, 0.18); /* neutral, not branded */
-
   --cc-space-1: 0.25rem;
   --cc-space-2: 0.5rem;
   --cc-space-3: 0.75rem;
@@ -60,6 +70,7 @@
   --cc-space-10: 3rem;
   --cc-space-11: 3.5rem;
   --cc-space-12: 4rem;
+
   /* Section rhythm (tokens only) */
   --cc-section-y-sm: 2.5rem; /* 40px */
   --cc-section-y-md: 4rem; /* 64px */
@@ -77,6 +88,7 @@
 
   --cc-font-body: var(--font-body-family);
   --cc-font-heading: var(--font-heading-family);
+
   --cc-text-xs: 0.75rem;
   --cc-text-sm: 0.875rem;
   --cc-text-base: 1rem;
@@ -92,12 +104,32 @@
 }
 
 @layer base {
+  /* Bind Curvea base tokens to the active Shopify color scheme (editor-controlled) */
+  .color-background-1,
+  .color-background-2,
+  .color-inverse {
+    --cc-bg: rgb(var(--color-background));
+    --cc-ink: rgba(var(--color-foreground), 1);
+    --cc-muted: rgba(var(--color-foreground), 0.72);
+    --cc-border: rgba(var(--color-foreground), 0.12);
+
+    /* Accent follows scheme button color (editable in theme settings) */
+    --cc-accent: rgb(var(--color-button));
+
+    /* Surface derived from bg (works for light + dark) */
+    --cc-surface: color-mix(in srgb, rgb(var(--color-background)) 92%, rgba(var(--color-foreground), 1) 8%);
+
+    /* Focus ring derived from accent */
+    --cc-btn-ring: color-mix(in srgb, rgb(var(--color-button)) 30%, transparent);
+  }
+
   /* Curvea Core typography scope: only affects Curvea sections/components */
   .cc-root {
     font-family: var(--cc-font-body);
     font-style: var(--font-body-style);
     font-weight: var(--font-body-weight);
     line-height: 1.6;
+    color: var(--cc-ink);
   }
 
   .cc-root h1,
@@ -113,7 +145,7 @@
     letter-spacing: -0.01em;
   }
 
-  /* Heading sizes: use neutral base values multiplied by Dawn scale */
+  /* Heading sizes: base values multiplied by Dawn scale */
   .cc-root h1 {
     font-size: calc(var(--cc-h1) * var(--font-heading-scale));
     line-height: 1.15;
@@ -282,7 +314,7 @@
     border: 1px solid var(--cc-border);
   }
   .cc-btn--secondary:hover {
-    background-color: rgba(17, 24, 39, 0.04);
+    background-color: color-mix(in srgb, var(--cc-accent) 7%, transparent);
   }
 
   .cc-btn--ghost {
