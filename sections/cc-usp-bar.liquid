@@ -47,10 +47,16 @@
   endcase
 -%}
 
-<section class="cc-section {{ py_class }} {{ bg_class }} {{ text_class }}">
+<section {{ section.shopify_attributes }} class="cc-section {{ py_class }} {{ bg_class }} {{ text_class }}">
   {%- capture header_content -%}
-    {%- render 'cc-heading', tag: 'h2', text: section.settings.heading, align: align -%}
-    {%- render 'cc-heading', tag: 'p', text: section.settings.subheading, align: align, classes: 'text-base text-current/70' -%}
+    {%- if section.settings.heading != blank -%}
+      {%- render 'cc-heading', tag: 'h2', text: section.settings.heading, align: align -%}
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      {%- render 'cc-heading', tag: 'p', text: section.settings.subheading, align: align, classes: 'text-base text-current/70' -%}
+    {%- endif -%}
+
     {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
       {%- render 'cc-button', label: section.settings.button_label, href: section.settings.button_link, variant: section.settings.button_variant -%}
     {%- endif -%}
@@ -59,23 +65,29 @@
   {%- capture usp_content -%}
     <div class="flex flex-wrap justify-between gap-6 text-sm sm:flex-nowrap">
       {%- for block in section.blocks -%}
-        <div class="flex flex-1 flex-col {{ gap_class }} {{ align_class }}" {{ block.shopify_attributes }}>
-          {%- if block.settings.icon != blank -%}
-            <div class="w-8">
-              {%- render 'cc-media', image: block.settings.icon, aspect: '1/1', classes: 'w-8' -%}
-            </div>
-          {%- endif -%}
-          <div class="font-semibold">{{ block.settings.title }}</div>
-          {%- if block.settings.text != blank -%}
-            <div class="text-current/70">{{ block.settings.text }}</div>
-          {%- endif -%}
-        </div>
+        {%- if block.type == 'usp' -%}
+          <div class="flex flex-1 flex-col {{ gap_class }} {{ align_class }} {{ items_class }}" {{ block.shopify_attributes }}>
+            {%- if block.settings.icon != blank -%}
+              <div class="w-8">
+                {%- render 'cc-media', image: block.settings.icon, aspect: '1/1', classes: 'w-8' -%}
+              </div>
+            {%- endif -%}
+
+            <div class="font-semibold">{{ block.settings.title | escape }}</div>
+
+            {%- if block.settings.text != blank -%}
+              <div class="text-current/70">{{ block.settings.text | escape }}</div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
       {%- endfor -%}
     </div>
   {%- endcapture -%}
 
   {%- capture section_content -%}
-    {%- render 'cc-stack', gap: gap_class, classes: align_class, content: header_content -%}
+    {%- if header_content != blank -%}
+      {%- render 'cc-stack', gap: gap_class, classes: align_class, content: header_content -%}
+    {%- endif -%}
     {{ usp_content }}
   {%- endcapture -%}
 
@@ -207,7 +219,7 @@
           "type": "text",
           "id": "text",
           "label": "Text",
-          "default": "Delivered in 2-4 days."
+          "default": "Delivered in 2–4 days."
         }
       ]
     }
@@ -215,35 +227,19 @@
   "presets": [
     {
       "name": "Classic",
-      "blocks": [
-        { "type": "usp" },
-        { "type": "usp" },
-        { "type": "usp" }
-      ]
+      "blocks": [{ "type": "usp" }, { "type": "usp" }, { "type": "usp" }]
     },
     {
       "name": "Split",
-      "blocks": [
-        { "type": "usp" },
-        { "type": "usp" },
-        { "type": "usp" },
-        { "type": "usp" }
-      ]
+      "blocks": [{ "type": "usp" }, { "type": "usp" }, { "type": "usp" }, { "type": "usp" }]
     },
     {
       "name": "Minimal",
-      "blocks": [
-        { "type": "usp" },
-        { "type": "usp" }
-      ]
+      "blocks": [{ "type": "usp" }, { "type": "usp" }]
     },
     {
       "name": "Editorial",
-      "blocks": [
-        { "type": "usp" },
-        { "type": "usp" },
-        { "type": "usp" }
-      ]
+      "blocks": [{ "type": "usp" }, { "type": "usp" }, { "type": "usp" }]
     }
   ]
 }
