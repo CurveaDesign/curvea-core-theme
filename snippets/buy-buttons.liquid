@@ -80,6 +80,11 @@
                 assign quantity_rule_soldout = true
               endif
             endif
+
+            assign variant_unavailable = false
+            if product.selected_or_first_available_variant == null
+              assign variant_unavailable = true
+            endif
           -%}
 
           {%- if cc_disable_atc -%}
@@ -107,15 +112,16 @@
               type="submit"
               name="add"
               class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
-              {% if product.selected_or_first_available_variant == null
+              {% if variant_unavailable
                 or product.selected_or_first_available_variant.available == false
                 or quantity_rule_soldout
               %}
                 disabled
+                aria-disabled="true"
               {% endif %}
             >
               <span>
-                {%- if product.selected_or_first_available_variant == null -%}
+                {%- if variant_unavailable -%}
                   {{ 'products.product.unavailable' | t }}
                 {%- elsif product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
                   {{ 'products.product.sold_out' | t }}
@@ -137,10 +143,10 @@
     <div class="product-form">
       <div class="product-form__buttons form">
         <button
-          type="submit"
-          name="add"
+          type="button"
           class="product-form__submit button button--full-width button--primary"
           disabled
+          aria-disabled="true"
         >
           {{ 'products.product.sold_out' | t }}
         </button>
