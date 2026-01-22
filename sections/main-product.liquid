@@ -98,10 +98,15 @@
                 </p>
               {%- when 'title' -%}
                 <div class="product__title" {{ block.shopify_attributes }}>
-                  <h1>{{ product.title | escape }}</h1>
+                  <h1 class="product__title-heading">{{ product.title | escape }}</h1>
                 </div>
               {%- when 'price' -%}
-                <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
+                <div
+                  id="price-{{ section.id }}"
+                  role="status"
+                  class="product__price-block"
+                  {{ block.shopify_attributes }}
+                >
                   {%- render 'price',
                     product: product,
                     use_variant: true,
@@ -110,12 +115,12 @@
                   -%}
                 </div>
                 {%- if product.quantity_price_breaks_configured? -%}
-                  <div class="volume-pricing-note" id="Volume-Note-{{ section.id }}">
+                  <div class="volume-pricing-note product__volume-pricing-note" id="Volume-Note-{{ section.id }}">
                     <span>{{ 'products.product.volume_pricing.note' | t }}</span>
                   </div>
                 {%- endif -%}
                 {%- if cart.taxes_included or cart.duties_included or shop.shipping_policy.body != blank -%}
-                  <div class="product__tax caption rte">
+                  <div class="product__tax caption rte product__tax-note">
                     {%- if cart.duties_included and cart.taxes_included -%}
                       {{ 'products.product.duties_and_taxes_included' | t }}
                     {%- elsif cart.taxes_included -%}
@@ -130,14 +135,18 @@
                 {%- endif -%}
                 <div {{ block.shopify_attributes }}>
                   {%- assign product_form_installment_id = 'product-form-installment-' | append: section.id -%}
-                  {%- form 'product', product, id: product_form_installment_id, class: 'installment caption-large' -%}
+                  {%- form 'product',
+                    product,
+                    id: product_form_installment_id,
+                    class: 'installment caption-large product__installments'
+                  -%}
                     <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
                     {{ form | payment_terms }}
                   {%- endform -%}
                 </div>
               {%- when 'inventory' -%}
                 <p
-                  class="product__inventory{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.inventory_management != 'shopify' %} visibility-hidden{% endif %}"
+                  class="product__inventory product__status{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.inventory_management != 'shopify' %} visibility-hidden{% endif %}"
                   {{ block.shopify_attributes }}
                   id="Inventory-{{ section.id }}"
                   role="status"
@@ -188,7 +197,10 @@
                 </p>
               {%- when 'description' -%}
                 {%- if product.description != blank -%}
-                  <div class="product__description rte quick-add-hidden" {{ block.shopify_attributes }}>
+                  <div
+                    class="product__description rte quick-add-hidden product__description-body"
+                    {{ block.shopify_attributes }}
+                  >
                     {{ product.description }}
                   </div>
                 {%- endif -%}
@@ -415,7 +427,7 @@
                             {%- assign price = product.selected_or_first_available_variant.price
                               | money_with_currency
                             -%}
-                            <span data-text="{{ 'products.product.volume_pricing.price_at_each_html' | t: price: variant_price }}">
+                            <span data-text="{{ 'products.product.volume_pricing.price_at_each_html' | t: price: price }}">
                               {{- 'sections.quick_order_list.each' | t: money: price -}}
                             </span>
                           </li>
@@ -482,7 +494,7 @@
                 -%}
               {%- when 'rating' -%}
                 {%- if product.metafields.reviews.rating.value != blank -%}
-                  <div class="rating-wrapper">
+                  <div class="rating-wrapper product__rating">
                     {% liquid
                       assign rating_decimal = 0
                       assign decimal = product.metafields.reviews.rating.value.rating | modulo: 1
