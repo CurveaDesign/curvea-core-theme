@@ -47,10 +47,16 @@
   endcase
 -%}
 
-<section class="cc-section {{ py_class }} {{ bg_class }} {{ text_class }}">
+<section {{ section.shopify_attributes }} class="cc-section {{ py_class }} {{ bg_class }} {{ text_class }}">
   {%- capture header_content -%}
-    {%- render 'cc-heading', tag: 'h2', text: section.settings.heading, align: align -%}
-    {%- render 'cc-heading', tag: 'p', text: section.settings.subheading, align: align, classes: 'text-base text-current/70' -%}
+    {%- if section.settings.heading != blank -%}
+      {%- render 'cc-heading', tag: 'h2', text: section.settings.heading, align: align -%}
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      {%- render 'cc-heading', tag: 'p', text: section.settings.subheading, align: align, classes: 'text-base text-current/70' -%}
+    {%- endif -%}
+
     {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
       {%- render 'cc-button', label: section.settings.button_label, href: section.settings.button_link, variant: section.settings.button_variant -%}
     {%- endif -%}
@@ -59,26 +65,32 @@
   {%- capture steps_content -%}
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
       {%- for block in section.blocks -%}
-        <div class="cc-card flex flex-col {{ gap_class }}" {{ block.shopify_attributes }}>
-          <div class="flex items-center justify-between">
-            <div class="text-xs font-semibold uppercase tracking-wide text-current/60">Step {{ forloop.index }}</div>
-            {%- if block.settings.icon != blank -%}
-              <div class="w-10">
-                {%- render 'cc-media', image: block.settings.icon, aspect: '1/1', classes: 'w-10' -%}
-              </div>
+        {%- if block.type == 'step' -%}
+          <div class="cc-card flex flex-col {{ gap_class }} {{ items_class }}" {{ block.shopify_attributes }}>
+            <div class="flex w-full items-center justify-between">
+              <div class="text-xs font-semibold uppercase tracking-wide text-current/60">Step {{ forloop.index }}</div>
+              {%- if block.settings.icon != blank -%}
+                <div class="w-10">
+                  {%- render 'cc-media', image: block.settings.icon, aspect: '1/1', classes: 'w-10' -%}
+                </div>
+              {%- endif -%}
+            </div>
+
+            <div class="text-lg font-semibold">{{ block.settings.title | escape }}</div>
+
+            {%- if block.settings.text != blank -%}
+              <p class="text-sm text-current/70">{{ block.settings.text | escape }}</p>
             {%- endif -%}
           </div>
-          <div class="text-lg font-semibold">{{ block.settings.title }}</div>
-          {%- if block.settings.text != blank -%}
-            <p class="text-sm text-current/70">{{ block.settings.text }}</p>
-          {%- endif -%}
-        </div>
+        {%- endif -%}
       {%- endfor -%}
     </div>
   {%- endcapture -%}
 
   {%- capture section_content -%}
-    {%- render 'cc-stack', gap: gap_class, classes: align_class, content: header_content -%}
+    {%- if header_content != blank -%}
+      {%- render 'cc-stack', gap: gap_class, classes: align_class, content: header_content -%}
+    {%- endif -%}
     {{ steps_content }}
   {%- endcapture -%}
 
@@ -218,35 +230,19 @@
   "presets": [
     {
       "name": "Classic",
-      "blocks": [
-        { "type": "step" },
-        { "type": "step" },
-        { "type": "step" }
-      ]
+      "blocks": [{ "type": "step" }, { "type": "step" }, { "type": "step" }]
     },
     {
       "name": "Split",
-      "blocks": [
-        { "type": "step" },
-        { "type": "step" },
-        { "type": "step" },
-        { "type": "step" }
-      ]
+      "blocks": [{ "type": "step" }, { "type": "step" }, { "type": "step" }, { "type": "step" }]
     },
     {
       "name": "Minimal",
-      "blocks": [
-        { "type": "step" },
-        { "type": "step" }
-      ]
+      "blocks": [{ "type": "step" }, { "type": "step" }]
     },
     {
       "name": "Editorial",
-      "blocks": [
-        { "type": "step" },
-        { "type": "step" },
-        { "type": "step" }
-      ]
+      "blocks": [{ "type": "step" }, { "type": "step" }, { "type": "step" }]
     }
   ]
 }
