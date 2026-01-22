@@ -64,7 +64,7 @@
           {%- render 'gift-card-recipient-form', product: product, form: form, section: section -%}
         {%- endif -%}
 
-        <div class="product-form__buttons">
+        <div class="product-form__buttons product-form__actions">
           {%- liquid
             assign check_against_inventory = true
             if product.selected_or_first_available_variant.inventory_management != 'shopify'
@@ -91,7 +91,7 @@
             {%- if settings.cc_disable_atc_mode == 'cta' -%}
               {%- if settings.cc_disable_atc_link != blank -%}
                 <a
-                  class="product-form__submit button button--full-width button--primary"
+                  class="product-form__submit button button--full-width button--primary product-form__primary-action"
                   href="{{ settings.cc_disable_atc_link }}"
                 >
                   {{ settings.cc_disable_atc_label }}
@@ -99,7 +99,7 @@
               {%- else -%}
                 <button
                   type="button"
-                  class="product-form__submit button button--full-width button--primary"
+                  class="product-form__submit button button--full-width button--primary product-form__primary-action"
                   disabled
                 >
                   {{ settings.cc_disable_atc_label }}
@@ -111,7 +111,7 @@
               id="ProductSubmitButton-{{ section_id }}"
               type="submit"
               name="add"
-              class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
+              class="product-form__submit button button--full-width button--primary product-form__primary-action"
               {% if variant_unavailable
                 or product.selected_or_first_available_variant.available == false
                 or quantity_rule_soldout
@@ -133,7 +133,9 @@
             </button>
 
             {%- if show_dynamic_checkout -%}
-              {{ form | payment_button }}
+              <div class="product-form__secondary-action product-form__payment-button">
+                {{ form | payment_button }}
+              </div>
             {%- endif -%}
           {%- endif -%}
         </div>
@@ -144,7 +146,7 @@
       <div class="product-form__buttons form">
         <button
           type="button"
-          class="product-form__submit button button--full-width button--primary"
+          class="product-form__submit button button--full-width button--primary product-form__primary-action"
           disabled
           aria-disabled="true"
         >
