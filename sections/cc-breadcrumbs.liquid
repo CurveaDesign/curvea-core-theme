@@ -1,36 +1,54 @@
 {% if section.settings.enabled %}
   {% unless request.page_type == 'index' %}
-    <nav class="text-sm" aria-label="Breadcrumb">
+    <nav {{ section.shopify_attributes }} class="text-sm" aria-label="Breadcrumb">
       <ol class="flex flex-wrap items-center gap-2">
         <li>
-          <a href="{{ routes.root_url }}" class="transition-opacity hover:opacity-75">Home</a>
+          <a
+            href="{{ routes.root_url }}"
+            class="transition-opacity hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/40"
+            >Home</a
+          >
         </li>
 
         {% if request.page_type == 'collection' and collection != blank %}
-          <li class="text-neutral-400">/</li>
-          <li>{{ collection.title }}</li>
+          <li class="text-neutral-400" aria-hidden="true">/</li>
+          <li aria-current="page">{{ collection.title }}</li>
+
         {% elsif request.page_type == 'product' and product != blank %}
           {% if collection != blank %}
-            <li class="text-neutral-400">/</li>
+            <li class="text-neutral-400" aria-hidden="true">/</li>
             <li>
-              <a href="{{ collection.url }}" class="transition-opacity hover:opacity-75">{{ collection.title }}</a>
+              <a
+                href="{{ collection.url }}"
+                class="transition-opacity hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/40"
+              >
+                {{- collection.title -}}
+              </a>
             </li>
           {% endif %}
-          <li class="text-neutral-400">/</li>
-          <li>{{ product.title }}</li>
+          <li class="text-neutral-400" aria-hidden="true">/</li>
+          <li aria-current="page">{{ product.title }}</li>
+
         {% elsif request.page_type == 'page' and page != blank %}
-          <li class="text-neutral-400">/</li>
-          <li>{{ page.title }}</li>
+          <li class="text-neutral-400" aria-hidden="true">/</li>
+          <li aria-current="page">{{ page.title }}</li>
+
         {% elsif request.page_type == 'blog' and blog != blank %}
-          <li class="text-neutral-400">/</li>
-          <li>{{ blog.title }}</li>
+          <li class="text-neutral-400" aria-hidden="true">/</li>
+          <li aria-current="page">{{ blog.title }}</li>
+
         {% elsif request.page_type == 'article' and article != blank %}
-          <li class="text-neutral-400">/</li>
+          <li class="text-neutral-400" aria-hidden="true">/</li>
           <li>
-            <a href="{{ blog.url }}" class="transition-opacity hover:opacity-75">{{ blog.title }}</a>
+            <a
+              href="{{ blog.url }}"
+              class="transition-opacity hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/40"
+            >
+              {{- blog.title -}}
+            </a>
           </li>
-          <li class="text-neutral-400">/</li>
-          <li>{{ article.title }}</li>
+          <li class="text-neutral-400" aria-hidden="true">/</li>
+          <li aria-current="page">{{ article.title }}</li>
         {% endif %}
       </ol>
     </nav>
