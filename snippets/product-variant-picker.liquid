@@ -68,10 +68,7 @@
           </label>
           <div class="select variant-picker__select">
             {%- if picker_type == 'swatch_dropdown' -%}
-              <span
-                data-selected-value
-                class="dropdown-swatch"
-              >
+              <span class="dropdown-swatch">
                 {% render 'swatch', swatch: option.selected_value.swatch, shape: block.settings.swatch_shape %}
               </span>
             {%- endif -%}
