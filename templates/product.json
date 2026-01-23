@@ -10,9 +10,7 @@
             "text_style": "uppercase"
           }
         },
-        "title": {
-          "type": "title"
-        },
+        "title": { "type": "title" },
         "caption": {
           "type": "text",
           "settings": {
@@ -20,18 +18,12 @@
             "text_style": "subtitle"
           }
         },
-        "price": {
-          "type": "price"
-        },
+        "price": { "type": "price" },
         "variant_picker": {
           "type": "variant_picker",
-          "settings": {
-            "picker_type": "button"
-          }
+          "settings": { "picker_type": "button" }
         },
-        "quantity_selector": {
-          "type": "quantity_selector"
-        },
+        "quantity_selector": { "type": "quantity_selector" },
         "buy_buttons": {
           "type": "buy_buttons",
           "settings": {
@@ -39,9 +31,7 @@
             "show_gift_card_recipient": true
           }
         },
-        "description": {
-          "type": "description"
-        },
+        "description": { "type": "description" },
         "collapsible-row-0": {
           "type": "collapsible_tab",
           "settings": {
@@ -80,9 +70,7 @@
         },
         "share": {
           "type": "share",
-          "settings": {
-            "share_label": "Share"
-          }
+          "settings": { "share_label": "Share" }
         }
       },
       "block_order": [
@@ -112,105 +100,26 @@
         "padding_bottom": 12
       }
     },
-    "image-with-text": {
-      "type": "image-with-text",
+    "product-highlights": {
+      "type": "cc-product-highlights",
       "blocks": {
-        "image-with-text-0": {
-          "type": "heading",
-          "settings": {
-            "heading": "Image with text",
-            "heading_size": "h1"
-          }
-        },
-        "image-with-text-1": {
-          "type": "text",
-          "settings": {
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.<\/p>",
-            "text_style": "body"
-          }
-        }
+        "highlight-1": { "type": "highlight", "settings": {} },
+        "highlight-2": { "type": "highlight", "settings": {} },
+        "highlight-3": { "type": "highlight", "settings": {} }
       },
-      "block_order": [
-        "image-with-text-0",
-        "image-with-text-1"
-      ],
-      "settings": {
-        "height": "small",
-        "desktop_image_width": "medium",
-        "layout": "text_first",
-        "desktop_content_position": "top",
-        "desktop_content_alignment": "left",
-        "content_layout": "no-overlap",
-        "color_scheme": "scheme-2",
-        "mobile_content_alignment": "left",
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
+      "block_order": ["highlight-1","highlight-2","highlight-3"],
+      "settings": {}
     },
-    "multicolumn": {
-      "type": "multicolumn",
+    "trust-badges": {
+      "type": "cc-trust-badges",
       "blocks": {
-        "column-0": {
-          "type": "column",
-          "settings": {
-            "title": "Free Shipping",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.<\/p>",
-            "link_label": "",
-            "link": ""
-          }
-        },
-        "column-1": {
-          "type": "column",
-          "settings": {
-            "title": "Hassle-Free Exchanges",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.<\/p>",
-            "link_label": "",
-            "link": ""
-          }
-        }
+        "badge-1": { "type": "badge", "settings": {} },
+        "badge-2": { "type": "badge", "settings": {} },
+        "badge-3": { "type": "badge", "settings": {} }
       },
-      "block_order": [
-        "column-0",
-        "column-1"
-      ],
-      "settings": {
-        "title": "",
-        "heading_size": "h1",
-        "image_width": "full",
-        "image_ratio": "adapt",
-        "columns_desktop": 2,
-        "column_alignment": "left",
-        "background_style": "none",
-        "button_label": "",
-        "button_link": "",
-        "swipe_on_mobile": false,
-        "color_scheme": "scheme-1",
-        "columns_mobile": "1",
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
-    "related-products": {
-      "type": "related-products",
-      "settings": {
-        "heading": "You may also like",
-        "heading_size": "h2",
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "image_ratio": "square",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "columns_mobile": "2",
-        "padding_top": 36,
-        "padding_bottom": 28
-      }
+      "block_order": ["badge-1","badge-2","badge-3"],
+      "settings": {}
     }
   },
-  "order": [
-    "main",
-    "image-with-text",
-    "multicolumn",
-    "related-products"
-  ]
+  "order": ["main","product-highlights","trust-badges"]
 }
